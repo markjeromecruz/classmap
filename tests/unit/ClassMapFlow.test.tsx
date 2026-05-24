@@ -125,7 +125,66 @@ describe("ClassMapFlow — save integration", () => {
 });
 
 describe("ClassMapFlow — live (non-demo) API path", () => {
-  it("renders the error alert when fetch fails (non-200)", async () => {
+  it("shows the PlanBoardSkeleton while a fetch is in-flight and removes it on success (CM-05)", async () => {
+    let resolveFetch!: (res: Response) => void;
+    const slowFetch = new Promise<Response>((r) => {
+      resolveFetch = r;
+    });
+    vi.stubGlobal("fetch", vi.fn(() => slowFetch));
+
+    const planResponse = {
+      id: "slow-1",
+      createdAt: "2026-05-23T18:00:00.000Z",
+      input: {
+        childAge: 9,
+        learningStyle: "visual",
+        subjects: ["math", "reading"],
+        hoursPerWeek: 10,
+      },
+      summary: "OK",
+      days: [
+        { day: "Mon", sessions: [{ subject: "math", title: "M1", description: "d", materials: [], minutes: 30 }] },
+        { day: "Tue", sessions: [{ subject: "math", title: "M2", description: "d", materials: [], minutes: 30 }] },
+        { day: "Wed", sessions: [{ subject: "math", title: "M3", description: "d", materials: [], minutes: 30 }] },
+        { day: "Thu", sessions: [{ subject: "math", title: "M4", description: "d", materials: [], minutes: 30 }] },
+        { day: "Fri", sessions: [{ subject: "math", title: "M5", description: "d", materials: [], minutes: 30 }] },
+      ],
+    };
+
+    const user = userEvent.setup();
+    render(<ClassMapFlow forceDemo={false} />);
+    await user.click(screen.getByRole("button", { name: /generate plan/i }));
+
+    // Loading phase: status flips, skeleton appears, form is aria-busy
+    await waitFor(() => {
+      expect(flowRoot().getAttribute("data-status")).toBe("loading");
+    });
+    const skeleton = document.querySelector(
+      '[data-slot="plan-board-skeleton"]',
+    );
+    expect(skeleton).not.toBeNull();
+    expect(skeleton?.getAttribute("aria-busy")).toBe("true");
+    expect(skeleton?.getAttribute("aria-live")).toBe("polite");
+    expect(formSection().getAttribute("aria-busy")).toBe("true");
+
+    // Resolve the fetch
+    resolveFetch(
+      new Response(JSON.stringify(planResponse), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    await waitFor(() => {
+      expect(flowRoot().getAttribute("data-status")).toBe("success");
+    });
+    expect(
+      document.querySelector('[data-slot="plan-board-skeleton"]'),
+    ).toBeNull();
+    expect(result()).not.toBeNull();
+  });
+
+  it("renders the error alert when fetch fails (non-200) — shadcn Alert variant=destructive (CM-05)", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(async () =>
@@ -145,7 +204,17 @@ describe("ClassMapFlow — live (non-demo) API path", () => {
     });
     const alert = errorAlert() as HTMLElement;
     expect(alert).not.toBeNull();
-    expect(within(alert).getByText(/claude unavailable/i)).toBeInTheDocument();
+    // Now backed by shadcn Alert (role="alert"); flow's data-slot overrides
+    // the primitive's default ("alert") with the documented "classmap-flow-error".
+    expect(alert.getAttribute("role")).toBe("alert");
+    expect(alert.getAttribute("data-slot")).toBe("classmap-flow-error");
+    // Title comes from shadcn AlertTitle; description carries the error message
+    expect(
+      alert.querySelector('[data-slot="alert-title"]')?.textContent,
+    ).toMatch(/couldn.{1,3}t generate a plan/i);
+    expect(
+      alert.querySelector('[data-slot="alert-description"]')?.textContent,
+    ).toMatch(/claude unavailable/i);
     expect(result()).toBeNull();
   });
 
