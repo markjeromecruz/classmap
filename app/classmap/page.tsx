@@ -1,40 +1,36 @@
-import Link from "next/link";
+"use client";
 
-import { ClassMapFlow } from "@/components/classmap/ClassMapFlow";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-export const metadata = {
-  title: "ClassMap — AI homeschool lesson planner",
-  description:
-    "Generate a 5-day homeschool plan tailored to your child's age, learning style, and subjects.",
-};
+import { getCurrentSession } from "@/lib/classmap/auth";
+import { getChildren } from "@/lib/classmap/db";
 
-export default function ClassMapPage() {
+export default function ClassMapShellRoute() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const session = getCurrentSession();
+    if (!session) {
+      router.replace("/classmap/login");
+      return;
+    }
+    const children = getChildren();
+    if (children.length === 0) {
+      router.replace("/classmap/onboarding");
+      return;
+    }
+    router.replace("/classmap/today");
+  }, [router]);
+
   return (
-    <main className="mx-auto max-w-5xl px-4 py-10 sm:py-16">
-      <header className="mb-10 flex flex-wrap items-start justify-between gap-4">
-        <div className="space-y-3">
-          <Link
-            href="/"
-            className="text-xs text-muted-foreground hover:text-foreground"
-          >
-            ← back to portfolio
-          </Link>
-          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-            ClassMap
-          </h1>
-          <p className="max-w-2xl text-sm text-muted-foreground sm:text-base">
-            An AI lesson planner for homeschooling parents. Tell it about your
-            child and it lays out a balanced week across the subjects you pick.
-          </p>
-        </div>
-        <Link
-          href="/classmap/saved"
-          className="text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
-        >
-          Saved plans →
-        </Link>
-      </header>
-      <ClassMapFlow />
+    <main
+      data-slot="classmap-shell-route"
+      className="grid min-h-dvh place-items-center bg-[color:var(--paper)] text-[color:var(--ink)]"
+      aria-busy
+      aria-live="polite"
+    >
+      <p className="kicker text-[color:var(--ink-faded)]">Loading…</p>
     </main>
   );
 }
