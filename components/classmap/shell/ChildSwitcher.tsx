@@ -129,7 +129,9 @@ export function ChildSwitcher() {
   // "Calling setState synchronously within an effect can trigger cascading
   // renders" rule.
   const [fallbackChildren] = useState<Child[]>(() => safeGetChildren());
-  const [fallbackActive] = useState<Child | null>(() => safeGetActiveChild());
+  const [fallbackActive, setFallbackActive] = useState<Child | null>(() =>
+    safeGetActiveChild(),
+  );
   const detailsRef = useRef<HTMLDetailsElement>(null);
 
   const children: Child[] = reactiveChildren ?? fallbackChildren;
