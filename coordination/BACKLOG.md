@@ -18,7 +18,7 @@ Statuses: `TODO` → `IN_PROGRESS` → `NEEDS_TEST` → `DONE_PENDING_A` → `DO
 
 | ID     | Owner | Status | Title                                                       | Depends on | Notes |
 |--------|-------|--------|-------------------------------------------------------------|------------|-------|
-| CM-01  | B     | IN_PROGRESS | `ClassMapForm` component                              | A-01       | Use `lessonPlanInputSchema` from `lib/types.ts`. shadcn form/input/select/checkbox/textarea. Submitting calls a callback prop — wiring to API comes in CM-03. |
+| CM-01  | B     | NEEDS_TEST | `ClassMapForm` component                               | A-01       | Use `lessonPlanInputSchema` from `lib/types.ts`. shadcn form/input/select/checkbox/textarea. Submitting calls a callback prop — wiring to API comes in CM-03. |
 | CM-02  | B     | TODO   | `PlanCard` + `PlanBoard` components                         | A-01       | Render `LessonPlan` from `lib/types.ts`. 5-column day layout, subject-colored cards. Use shadcn card/badge. |
 | CM-03  | B     | TODO   | `/classmap/result` page wiring form → API → board           | CM-01, CM-02, A-02, A-03 | Reads `NEXT_PUBLIC_DEMO_MODE`. If true, calls `getDemoPlan(input)`. Else POSTs to `/api/generate`. |
 | CM-04  | B     | TODO   | `/classmap/saved` + `lib/storage.ts` (localStorage)         | CM-02      | Save button on result page; saved list page; delete button. |
@@ -29,7 +29,7 @@ Statuses: `TODO` → `IN_PROGRESS` → `NEEDS_TEST` → `DONE_PENDING_A` → `DO
 
 | ID    | Owner | Status | Title                                                  | Covers          | Notes |
 |-------|-------|--------|--------------------------------------------------------|-----------------|-------|
-| T-00  | C     | TODO   | Vitest + Playwright + CI                               | infra           | `npm test`, `npx playwright test`; GH Actions job parallel to deploy |
+| T-00  | C     | DONE_PENDING_A | Vitest + Playwright + CI                       | infra           | `npm test` 27/27, `npx playwright test` 1/1; CI at `.github/workflows/test.yml` |
 | T-01  | C     | TODO   | Unit tests for `ClassMapForm` validation               | CM-01           | invalid age, empty subjects, hours out of bounds, etc. |
 | T-02  | C     | TODO   | Component tests for `PlanCard` / `PlanBoard`           | CM-02           | snapshot + a11y; verify all 5 days render |
 | T-03  | C     | TODO   | E2E happy path: fill form → see plan                   | CM-03           | mock `/api/generate` with a fixture; assert plan renders |
