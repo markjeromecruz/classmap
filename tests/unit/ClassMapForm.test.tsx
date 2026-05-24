@@ -31,9 +31,9 @@ describe("ClassMapForm — render", () => {
     expect(childNameInput()).toBeInTheDocument();
     expect(ageInput()).toBeInTheDocument();
     expect(screen.getByLabelText(/learning style/i)).toBeInTheDocument();
-    // The fieldset legend and inner div both expose role="group" name=Subjects;
-    // verify at least one renders (nested labeling is a minor a11y smell, not a bug).
-    expect(screen.getAllByRole("group", { name: /subjects/i }).length).toBeGreaterThan(0);
+    // Regression for ISS-01: exactly one accessible group named "Subjects"
+    // (the fieldset+legend). The inner div must not re-expose role/aria-label.
+    expect(screen.getAllByRole("group", { name: /subjects/i })).toHaveLength(1);
     expect(hoursInput()).toBeInTheDocument();
     expect(screen.getByLabelText(/state or region/i)).toBeInTheDocument();
     expect(notesInput()).toBeInTheDocument();

@@ -1,9 +1,20 @@
 import { defineConfig } from "vitest/config";
+import { fileURLToPath } from "node:url";
 import react from "@vitejs/plugin-react";
-import tsconfigPaths from "vite-tsconfig-paths";
+
+// We intentionally do NOT use vite-tsconfig-paths here: tsconfig.json
+// excludes tests/** (and the config files themselves), which makes the
+// plugin skip the `@/*` mapping for the very files that need it. Define
+// the alias explicitly so the test suite is self-contained.
+const projectRoot = fileURLToPath(new URL(".", import.meta.url));
 
 export default defineConfig({
-  plugins: [tsconfigPaths(), react()],
+  plugins: [react()],
+  resolve: {
+    alias: {
+      "@": projectRoot.replace(/\/$/, ""),
+    },
+  },
   test: {
     environment: "jsdom",
     globals: true,
