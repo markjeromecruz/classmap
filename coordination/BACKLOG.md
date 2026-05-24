@@ -132,7 +132,7 @@ All C tasks: **mobile breakpoint assertion at 360 px is required for any page-le
 
 | ID     | Owner | Status | Title                                                  | Covers      | Notes |
 |--------|-------|--------|--------------------------------------------------------|-------------|-------|
-| TC-01  | C     | TODO   | `lib/classmap/db.ts` round-trip + v1→v2 migration      | A-14        | Real localStorage. Round-trip every shape. Migration test from a fixture v1 saved-plans payload → v2 `LessonPlan` + `LessonTask[]`. |
+| TC-01  | C     | DONE_PENDING_A | `lib/classmap/db.ts` round-trip + v1→v2 migration | A-14    | Verified by C — tests/unit/classmap-db.test.ts (29 tests). Real localStorage; schemas asserted via lib/classmap/types.ts. Full CRUD round-trip; migration: fixture v1 saved-plans → v2 LessonPlan + 3 LessonTasks + auto Imported child (or existing), v1 key removed; corrupt/empty/non-array v1 → key cleared, state untouched; unknown day skipped, unknown subject → math, minutes clamped 5..240; runs once per module load. |
 | TC-02  | C     | TODO   | Mock auth flow                                         | CM-07, A-15 | signUp, signIn, signOut, session persists across reload. Cosmetic OTP input present but doesn't block. |
 | TC-03  | C     | TODO   | Onboarding wizard                                      | CM-08       | Happy path through all 5 steps, validation errors per step, completed wizard creates a Child via db with derived ageBand + avatarColor. |
 | TC-04  | C     | TODO   | Family page                                            | CM-09       | Renders all children, avatars present, state requirements panel toggles, add-child reopens wizard. |
