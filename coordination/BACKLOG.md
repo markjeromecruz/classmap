@@ -69,7 +69,7 @@ ClassMap test coverage is DONE. New work starts when KindleMinds tasks hit `NEED
 | TK-01 | C     | DONE_PENDING_A | KindleMinds room grid render                   | KM-01           | tests/unit/kindleminds-landing.test.tsx — 16/16 passing. |
 | TK-02 | C     | DONE_PENDING_A | KindleMinds room page                          | KM-02           | tests/unit/kindleminds-room.test.tsx + kindleminds-ThreadCard.test.tsx — 28/28 passing. |
 | TK-03 | C     | DONE_PENDING_A | KindleMinds thread page                        | KM-03           | tests/unit/kindleminds-thread.test.tsx — 19/19 passing. |
-| TK-04 | C     | TODO           | KindleMinds e2e: landing → room → thread       | KM-01..KM-03    | Playwright nav test. |
+| TK-04 | C     | DONE_PENDING_A | KindleMinds e2e: landing → room → thread       | KM-01..KM-03    | tests/e2e/kindleminds-nav.spec.ts — landing→room→thread→back→back, asserts URL + data-slot at each hop. 404 path covered at the unit layer (next dev returns 500 for static-export notFound). |
 | TP-01 | C     | DONE_PENDING_A | Patriarch landing render                       | PT-01           | tests/unit/patriarch-landing.test.tsx — 8/8 passing. |
 | TP-02 | C     | DONE_PENDING_A | Patriarch devotional flow                      | PT-02           | tests/unit/patriarch-{DevotionalView,LiveDevotional,today-page}.test.tsx — 19/19 passing. |
 | TP-03 | C     | DONE_PENDING_A | Patriarch family altar render                  | PT-03           | tests/unit/patriarch-altar.test.tsx — 19/19 passing. |
