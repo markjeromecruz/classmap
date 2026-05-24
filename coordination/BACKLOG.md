@@ -38,9 +38,9 @@ Build the static social-hub demo. No backend, no auth, no real posting — data 
 | ID     | Owner | Status | Title                                                              | Depends on | Notes |
 |--------|-------|--------|--------------------------------------------------------------------|------------|-------|
 | KM-01  | B     | DONE_PENDING_A | `/kindleminds` landing page with rooms grid                | A-10       | Verified by C — tests/unit/kindleminds-landing.test.tsx (16 tests). Masthead, rooms-grid[data-count=5], one room-card per CURRICULUM_STYLES slug, links to /kindleminds/rooms/<slug>, h2 names, summed member count footer, RoomCard isolation. |
-| KM-02  | B     | NEEDS_TEST | `/kindleminds/rooms/[slug]` page with thread list              | KM-01      | `generateStaticParams` over `CURRICULUM_STYLES` (`dynamicParams=false`). Calls `getRoom(slug)` (notFound on miss) + `getThreadsForRoom(slug)`. Renders room masthead + threads via `ThreadCard`. Selectors: `data-slot="kindleminds-room"[data-room-slug]`, `data-slot="threads-list"[data-count]`, per-card `data-slot="thread-card"[data-thread-id][data-room-slug]` with `thread-card-replies`, `thread-card-views`, `thread-card-preview` sub-slots. |
+| KM-02  | B     | DONE_PENDING_A | `/kindleminds/rooms/[slug]` page with thread list          | KM-01      | Verified by C — tests/unit/kindleminds-room.test.tsx (13 tests). All 5 slugs render as async server component, threads-list[data-count] matches getThreadsForRoom, threads in source order, per-card data-thread-id + data-room-slug. generateStaticParams = CURRICULUM_STYLES; dynamicParams=false; notFound() on unknown; generateMetadata branches. Cross-rooms: total cards = THREADS.length. |
 | KM-03  | B     | TODO   | `/kindleminds/rooms/[slug]/[threadId]` thread + replies            | KM-02      | Full thread body + every reply. Replies use a thin left-rule and indented body; author + timestamp in `.kicker` style. |
-| KM-04  | B     | NEEDS_TEST | `components/kindleminds/RoomCard.tsx` + `ThreadCard.tsx`        | KM-01      | RoomCard landed with KM-01; ThreadCard landed with KM-02. Both export stable selectors. |
+| KM-04  | B     | DONE_PENDING_A | `components/kindleminds/RoomCard.tsx` + `ThreadCard.tsx`    | KM-01      | RoomCard verified with KM-01. ThreadCard verified — tests/unit/kindleminds-ThreadCard.test.tsx (15 tests): data slots, default href, custom basePath, h3 title, author + Intl date, reply pluralization (0/1/2), view count, preview truncation at word boundary + ellipsis, no-space hard-cut, full-fixture render sanity. |
 | KM-05  | B     | TODO   | Update portfolio landing: KindleMinds → live                       | KM-01, KM-02 | Edit `app/page.tsx` to change KindleMinds card from `coming-soon` → `live` with `href="/kindleminds"`. |
 
 ## Patriarch MVP (B)
@@ -50,8 +50,8 @@ Build the daily devotional + family altar demo. AI on for local runs (via `lib/p
 | ID     | Owner | Status | Title                                                              | Depends on | Notes |
 |--------|-------|--------|--------------------------------------------------------------------|------------|-------|
 | PT-01  | B     | DONE_PENDING_A | `/patriarch` landing                                       | A-10       | Verified by C — tests/unit/patriarch-landing.test.tsx (8 tests). Masthead h1+dek+back link, patriarch-day shows day-of-week+long date (clock pinned), today-card with theme h2 + scriptureReference, both CTA links present with documented targets, altar plan count footer. |
-| PT-02  | B     | NEEDS_TEST | `/patriarch/today` daily devotional view                       | A-10       | Server Component dispatches on `isDemoMode`: demo renders `<DevotionalView devotional={getTodayDevotional()} />` synchronously; live mounts `<LiveDevotional>` which POSTs `{}` to `/patriarch/api/devotional`, Zod-validates the response, and renders `<DevotionalView>` (Skeleton while loading, shadcn Alert on error). Selectors: `data-slot="patriarch-today"[data-mode=demo|live]`, "devotional"[data-devotional-id], "devotional-theme/-reference/-scripture/-reflection/-prompt/-prayer", "devotional-loading"/"devotional-error". |
-| PT-03  | B     | TODO   | `/patriarch/altar` family altar plans                              | A-10       | Grid of `FAMILY_ALTARS`. Each card: title, age range, minutes, scripture, opening question, activity, closing prayer. Add `/patriarch/altar/[id]` for a single plan. |
+| PT-02  | B     | DONE_PENDING_A | `/patriarch/today` daily devotional view                   | A-10       | Verified by C — DevotionalView (9 tests), LiveDevotional (7 tests), today-page dispatch (3 tests). All 6 devotional sub-slots present per devotional; live mode: loading skeleton has aria-busy+aria-live, fetch happy path swaps to DevotionalView, POST body is "{}", error paths (non-200, throw, schema-invalid) all surface destructive Alert; page data-mode reflects isDemoMode. |
+| PT-03  | B     | IN_PROGRESS | `/patriarch/altar` family altar plans                         | A-10       | Grid of `FAMILY_ALTARS`. Each card: title, age range, minutes, scripture, opening question, activity, closing prayer. Add `/patriarch/altar/[id]` for a single plan. |
 | PT-04  | B     | TODO   | Update portfolio landing: Patriarch → live                         | PT-01      | Edit `app/page.tsx`. |
 
 ## QA (C)
@@ -67,11 +67,11 @@ ClassMap test coverage is DONE. New work starts when KindleMinds tasks hit `NEED
 | T-04  | C     | DONE           | E2E save + reload                              | CM-04           | storage 13 + SavedPlansList 6 |
 | T-05  | C     | DONE           | Demo-mode static build smoke                   | A-03, A-05      | 14 contract tests |
 | TK-01 | C     | DONE_PENDING_A | KindleMinds room grid render                   | KM-01           | tests/unit/kindleminds-landing.test.tsx — 16/16 passing. |
-| TK-02 | C     | TODO           | KindleMinds room page                          | KM-02           | Slug → room dispatch; threads listed in order; missing slug → 404. |
+| TK-02 | C     | DONE_PENDING_A | KindleMinds room page                          | KM-02           | tests/unit/kindleminds-room.test.tsx + kindleminds-ThreadCard.test.tsx — 28/28 passing. |
 | TK-03 | C     | TODO           | KindleMinds thread page                        | KM-03           | Full body + every reply rendered; replies in order. |
 | TK-04 | C     | TODO           | KindleMinds e2e: landing → room → thread       | KM-01..KM-03    | Playwright nav test. |
 | TP-01 | C     | DONE_PENDING_A | Patriarch landing render                       | PT-01           | tests/unit/patriarch-landing.test.tsx — 8/8 passing. |
-| TP-02 | C     | TODO           | Patriarch devotional flow                      | PT-02           | Demo path renders all four blocks (scripture, reflection, prompt, prayer); live path mocks the API. |
+| TP-02 | C     | DONE_PENDING_A | Patriarch devotional flow                      | PT-02           | tests/unit/patriarch-{DevotionalView,LiveDevotional,today-page}.test.tsx — 19/19 passing. |
 | TP-03 | C     | TODO           | Patriarch family altar render                  | PT-03           | Grid renders all altars; single-altar page renders all 5 fields. |
 
 ## Conventions
