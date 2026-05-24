@@ -37,7 +37,7 @@ Build the static social-hub demo. No backend, no auth, no real posting — data 
 
 | ID     | Owner | Status | Title                                                              | Depends on | Notes |
 |--------|-------|--------|--------------------------------------------------------------------|------------|-------|
-| KM-01  | B     | NEEDS_TEST | `/kindleminds` landing page with rooms grid                    | A-10       | Editorial masthead + 5 rooms via `components/kindleminds/RoomCard.tsx` (which lands KM-04's RoomCard half — ThreadCard arrives with KM-02). `data-slot="kindleminds-landing"`, `data-slot="rooms-grid"[data-count=5]`, per-card `data-slot="room-card"[data-room-slug]`. |
+| KM-01  | B     | DONE_PENDING_A | `/kindleminds` landing page with rooms grid                | A-10       | Verified by C — tests/unit/kindleminds-landing.test.tsx (16 tests). Masthead, rooms-grid[data-count=5], one room-card per CURRICULUM_STYLES slug, links to /kindleminds/rooms/<slug>, h2 names, summed member count footer, RoomCard isolation. |
 | KM-02  | B     | TODO   | `/kindleminds/rooms/[slug]` page with thread list                  | KM-01      | Use `generateStaticParams` so it static-exports. Pull room via `getRoom(slug)`, threads via `getThreadsForRoom(slug)`. Render room masthead + thread list. Each thread card: title, author, posted-at, body preview (first 200 chars), reply + view counts. Link to `/kindleminds/rooms/<slug>/<thread-id>`. |
 | KM-03  | B     | TODO   | `/kindleminds/rooms/[slug]/[threadId]` thread + replies            | KM-02      | Full thread body + every reply. Replies use a thin left-rule and indented body; author + timestamp in `.kicker` style. |
 | KM-04  | B     | TODO   | `components/kindleminds/RoomCard.tsx` + `ThreadCard.tsx`           | KM-01      | Reusable cards. Stable `data-slot="room-card"` / `data-slot="thread-card"` selectors for C's tests. |
@@ -49,7 +49,7 @@ Build the daily devotional + family altar demo. AI on for local runs (via `lib/p
 
 | ID     | Owner | Status | Title                                                              | Depends on | Notes |
 |--------|-------|--------|--------------------------------------------------------------------|------------|-------|
-| PT-01  | B     | TODO   | `/patriarch` landing                                               | A-10       | Hero with day-of-week, today's devotional theme, link to today's reading and to the family altar plans. Editorial layout — keep austere, more white space, sparser color. |
+| PT-01  | B     | NEEDS_TEST | `/patriarch` landing                                           | A-10       | Austere centered masthead with day-of-week + today's theme via `getTodayDevotional()`. Selectors: `data-slot="patriarch-landing"`, `data-slot="patriarch-day"`, `data-slot="patriarch-today-card"`, `data-slot="patriarch-today-reference"`, `data-slot="patriarch-today-link"` (→ /patriarch/today), `data-slot="patriarch-altar-link"` (→ /patriarch/altar). |
 | PT-02  | B     | TODO   | `/patriarch/today` daily devotional view                           | A-10       | Scripture reference + text (block-quote treatment), reflection, prompt, prayer. In demo mode, render `getTodayDevotional()`. In local mode (`!isDemoMode`), call `/patriarch/api/devotional` (A-11). |
 | PT-03  | B     | TODO   | `/patriarch/altar` family altar plans                              | A-10       | Grid of `FAMILY_ALTARS`. Each card: title, age range, minutes, scripture, opening question, activity, closing prayer. Add `/patriarch/altar/[id]` for a single plan. |
 | PT-04  | B     | TODO   | Update portfolio landing: Patriarch → live                         | PT-01      | Edit `app/page.tsx`. |
@@ -66,7 +66,7 @@ ClassMap test coverage is DONE. New work starts when KindleMinds tasks hit `NEED
 | T-03  | C     | DONE           | E2E happy path: fill form → see plan           | CM-03           | 10/10 |
 | T-04  | C     | DONE           | E2E save + reload                              | CM-04           | storage 13 + SavedPlansList 6 |
 | T-05  | C     | DONE           | Demo-mode static build smoke                   | A-03, A-05      | 14 contract tests |
-| TK-01 | C     | TODO           | KindleMinds room grid render                   | KM-01           | All 5 rooms render; each links to `/kindleminds/rooms/<slug>`. |
+| TK-01 | C     | DONE_PENDING_A | KindleMinds room grid render                   | KM-01           | tests/unit/kindleminds-landing.test.tsx — 16/16 passing. |
 | TK-02 | C     | TODO           | KindleMinds room page                          | KM-02           | Slug → room dispatch; threads listed in order; missing slug → 404. |
 | TK-03 | C     | TODO           | KindleMinds thread page                        | KM-03           | Full body + every reply rendered; replies in order. |
 | TK-04 | C     | TODO           | KindleMinds e2e: landing → room → thread       | KM-01..KM-03    | Playwright nav test. |
