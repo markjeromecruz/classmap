@@ -3,7 +3,6 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -35,7 +34,9 @@ export function PlanCard({ session, className }: PlanCardProps) {
             {formatMinutes(session.minutes)}
           </span>
         </div>
-        <CardTitle>{session.title}</CardTitle>
+        <h4 className="font-heading text-sm leading-snug font-medium">
+          {session.title}
+        </h4>
       </CardHeader>
       <CardContent className="space-y-2">
         <CardDescription>{session.description}</CardDescription>
