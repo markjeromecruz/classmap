@@ -132,11 +132,12 @@ export default function Home() {
               title="KindleMinds"
               tagline="A private social hub for homeschool families."
               description="Curriculum-style forums (Classical, Charlotte Mason, unschooling), live co-op class scheduling, child-safe messaging, and a finder for local meetups — the slow, useful infrastructure of a community."
-              status="coming-soon"
+              href="/kindleminds"
+              status="live"
               highlights={[
-                "Forums organized by curriculum style",
-                "Live co-op class scheduling",
-                "Local meetup finder",
+                "Five rooms organized by curriculum style",
+                "Threaded discussions, no algorithmic feed",
+                "Static demo with seeded rooms and threads",
               ]}
             />
             <AppCard
@@ -145,11 +146,12 @@ export default function Home() {
               title="Patriarch"
               tagline="A focused app for men leading their households well."
               description="A daily five-minute devotional written for husbands and fathers, a Family Altar tool with pre-built devotions you can run tonight, Iron Circle accountability groups of four to six men, and an AI Faith Coach for the questions you can't quite ask anyone else."
-              status="coming-soon"
+              href="/patriarch"
+              status="live"
               highlights={[
                 "Daily devotional written for husbands and fathers",
-                "Pre-built family devotions, run tonight",
-                "Iron Circle accountability groups of 4–6",
+                "Pre-built family altar plans, run tonight",
+                "Demo edition; live AI when run locally",
               ]}
             />
           </div>
