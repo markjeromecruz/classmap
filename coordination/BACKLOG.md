@@ -7,38 +7,77 @@ Statuses: `TODO` → `IN_PROGRESS` → `NEEDS_TEST` → `DONE_PENDING_A` → `DO
 | ID    | Owner | Status        | Title                                              | Notes |
 |-------|-------|---------------|----------------------------------------------------|-------|
 | A-01  | A     | DONE          | Scaffold Next.js + TS + Tailwind + shadcn          | Next 16, React 19, Tailwind 4 |
-| A-02  | A     | DONE          | Claude headless wrapper + Zod schema               | `lib/claude.ts` spawns `claude -p` CLI (not the npm SDK — that ships only a binary). Parses JSON, Zod-validates against `lessonPlanSchema`. |
-| A-03  | A     | DONE          | Demo-mode switch + 3 canned plans (age bands)      | `lib/env.ts`, `lib/demo-data.ts` (early/upper/teen) |
-| A-04  | A     | DONE          | Portfolio landing                                  | `app/page.tsx` + `components/portfolio/AppCard.tsx` (Card-based, ClassMap live, others coming soon) |
-| A-05  | A     | DONE          | GitHub Pages workflow                              | `.github/workflows/deploy-pages.yml`; CI deletes `app/classmap/api/` before static build, sets `NEXT_PUBLIC_BASE_PATH=/classmap` |
+| A-02  | A     | DONE          | Claude headless wrapper + Zod schema               | `lib/claude.ts` spawns `claude -p` CLI. Parses JSON, Zod-validates against `lessonPlanSchema`. |
+| A-03  | A     | DONE          | ClassMap demo-mode switch + 3 canned plans         | `lib/env.ts`, `lib/demo-data.ts` (early/upper/teen) |
+| A-04  | A     | DONE          | Portfolio landing                                  | `app/page.tsx` + `components/portfolio/AppCard.tsx` |
+| A-05  | A     | DONE          | GitHub Pages workflow                              | `.github/workflows/deploy-pages.yml`; strips api/ pre-build, sets `NEXT_PUBLIC_BASE_PATH=/classmap` |
 | A-06  | A     | DONE          | Coordination files + agent prompts                 | this folder |
-| A-07  | A     | DONE          | Push to GitHub `markjeromecruz/classmap` public    | Repo live. Pages enabled via `gh api -X POST /repos/.../pages -f build_type=workflow`. URL: https://markjeromecruz.github.io/classmap/ (live once next deploy run succeeds) |
-| A-08  | A     | IN_PROGRESS   | Fix ISS-02: tsconfig alias in tests                | Add `tsconfig.test.json` extending root + setting `@/*` paths so we can re-narrow root tsconfig exclude AND keep `@/` aliases working in tests without hard-coding in `vitest.config.mts`. |
+| A-07  | A     | DONE          | Push to GitHub + enable Pages                      | Live: https://markjeromecruz.github.io/classmap/ |
+| A-08  | A     | DONE          | Fix ISS-02: tsconfig alias in tests                | tsconfig.test.json + vite-tsconfig-paths plugin |
+| A-09  | A     | DONE          | Editorial redesign (Fraunces + Instrument Sans)    | Warm-cream + ink-blue + terracotta palette, masthead, kicker/dek/lead/drop-cap utilities. Resolves AppCard half of ISS-03. |
+| A-10  | A     | DONE          | KindleMinds + Patriarch types & demo data          | `lib/kindleminds-types.ts`, `lib/kindleminds-demo-data.ts` (5 rooms, 10 threads), `lib/patriarch-types.ts`, `lib/patriarch-demo-data.ts` (3 devotionals, 3 family altars, 2 journal entries). |
+| A-11  | A     | TODO          | Patriarch Claude wrapper (lib/patriarch-claude.ts) | Headless `claude -p` with a devotional system prompt; returns Zod-validated `Devotional`. Mirror the ClassMap wrapper. Schedule once KM ships. |
+| A-12  | A     | TODO          | Update portfolio landing as apps come live         | Flip KindleMinds and Patriarch from `coming-soon` → `live` when their `/<app>` route exists. Update `app/page.tsx`. |
+| A-13  | A     | TODO          | Sub-app routing under static export (basePath)     | Verify `/kindleminds` and `/patriarch` static-export correctly under `/classmap` basePath. May require trailingSlash audit. |
 
 ## ClassMap MVP (B)
 
-| ID     | Owner | Status | Title                                                       | Depends on | Notes |
-|--------|-------|--------|-------------------------------------------------------------|------------|-------|
-| CM-01  | B     | DONE           | `ClassMapForm` component                           | A-01       | Verified by C — 41/41 tests after ISS-01 fix. Signed off by A. |
-| CM-02  | B     | DONE_PENDING_A | `PlanCard` + `PlanBoard` components                 | A-01       | Verified by C — tests/unit/PlanBoard.test.tsx (17 tests). 5-col day grid Mon..Fri, session counts, subject styling, materials chips, summary toggle, missing-day fallback, formatMinutes (45 min / 1h / 1h 30m), PE+Language labels. |
-| CM-03  | B     | DONE_PENDING_A | `/classmap/result` page wiring form → API → board   | CM-01, CM-02, A-02, A-03 | Verified by C — tests/unit/ClassMapFlow.test.tsx (10 tests). Demo happy path, regenerate, clear, save, live fetch (200/error/throw), aria-busy, data-status. |
-| CM-04  | B     | DONE_PENDING_A | `/classmap/saved` + `lib/storage.ts` (localStorage) | CM-02      | Verified by C — tests/unit/storage.test.ts (13 tests, real localStorage) + tests/unit/SavedPlansList.test.tsx (6 tests). Round-trip, dedupe-by-id, head-ordering, delete, corruption resilience. |
-| CM-05  | B     | DONE_PENDING_A | Loading + error states across `/classmap/*`         | CM-03      | Verified by C — tests/unit/PlanBoardSkeleton.test.tsx (6 tests) + ClassMapFlow loading/error additions (2 tests). Skeleton has documented data-slot/aria-busy/aria-live; 5 day cols; configurable sessionsPerDay; shadcn Skeleton primitive (animate-pulse). Error path now shadcn Alert variant=destructive with AlertTitle + AlertDescription. SavedPlansList loading slot present in source (timing untestable under React 19 — covered by source presence). |
-| CM-06  | B     | DONE_PENDING_A | Print stylesheet (Export PDF stretch)               | CM-02      | Verified by C — tests/unit/print-stylesheet.test.ts (12 source-level tests on the @media print block) + tests/e2e/print.spec.ts (1 chromium test via `page.emulateMedia({media:"print"})` asserts form + submit hidden). |
+| ID     | Owner | Status         | Title                                                | Depends on | Notes |
+|--------|-------|----------------|------------------------------------------------------|------------|-------|
+| CM-01  | B     | DONE           | `ClassMapForm` component                             | A-01       | Verified by C; 41/41 after ISS-01 fix. |
+| CM-02  | B     | DONE           | `PlanCard` + `PlanBoard` components                  | A-01       | Verified by C; 17 tests. |
+| CM-03  | B     | DONE           | `/classmap/result` page wiring form → API → board    | CM-01, CM-02, A-02, A-03 | Verified by C; 10-test flow incl. demo/live, regen, save. |
+| CM-04  | B     | DONE           | `/classmap/saved` + `lib/storage.ts`                 | CM-02      | Verified by C; storage 13 tests + SavedPlansList 6 tests. |
+| CM-05  | B     | DONE           | Loading + error states across `/classmap/*`          | CM-03      | Verified by C; PlanBoardSkeleton 6 tests + flow loading/error 2 tests. |
+| CM-06  | B     | DONE           | Print stylesheet                                     | CM-02      | Verified by C; 12 source-level + 1 chromium e2e. |
+
+## KindleMinds MVP (B)
+
+Build the static social-hub demo. No backend, no auth, no real posting — data comes from `lib/kindleminds-demo-data.ts`. Polish the editorial look; this should feel like an actual periodical issue, not a forum.
+
+| ID     | Owner | Status | Title                                                              | Depends on | Notes |
+|--------|-------|--------|--------------------------------------------------------------------|------------|-------|
+| KM-01  | B     | TODO   | `/kindleminds` landing page with rooms grid                        | A-10       | Render hero + `ROOMS` from `@/lib/kindleminds-demo-data`. Editorial layout: masthead-style header for the app, rooms as article previews. Use the design vocabulary (kicker, font-display, accent-clay). Each room card links to `/kindleminds/rooms/<slug>`. |
+| KM-02  | B     | TODO   | `/kindleminds/rooms/[slug]` page with thread list                  | KM-01      | Use `generateStaticParams` so it static-exports. Pull room via `getRoom(slug)`, threads via `getThreadsForRoom(slug)`. Render room masthead + thread list. Each thread card: title, author, posted-at, body preview (first 200 chars), reply + view counts. Link to `/kindleminds/rooms/<slug>/<thread-id>`. |
+| KM-03  | B     | TODO   | `/kindleminds/rooms/[slug]/[threadId]` thread + replies            | KM-02      | Full thread body + every reply. Replies use a thin left-rule and indented body; author + timestamp in `.kicker` style. |
+| KM-04  | B     | TODO   | `components/kindleminds/RoomCard.tsx` + `ThreadCard.tsx`           | KM-01      | Reusable cards. Stable `data-slot="room-card"` / `data-slot="thread-card"` selectors for C's tests. |
+| KM-05  | B     | TODO   | Update portfolio landing: KindleMinds → live                       | KM-01, KM-02 | Edit `app/page.tsx` to change KindleMinds card from `coming-soon` → `live` with `href="/kindleminds"`. |
+
+## Patriarch MVP (B)
+
+Build the daily devotional + family altar demo. AI on for local runs (via `lib/patriarch-claude.ts` once A ships A-11), canned in demo mode (from `lib/patriarch-demo-data.ts`).
+
+| ID     | Owner | Status | Title                                                              | Depends on | Notes |
+|--------|-------|--------|--------------------------------------------------------------------|------------|-------|
+| PT-01  | B     | TODO   | `/patriarch` landing                                               | A-10       | Hero with day-of-week, today's devotional theme, link to today's reading and to the family altar plans. Editorial layout — keep austere, more white space, sparser color. |
+| PT-02  | B     | TODO   | `/patriarch/today` daily devotional view                           | A-10       | Scripture reference + text (block-quote treatment), reflection, prompt, prayer. In demo mode, render `getTodayDevotional()`. In local mode (`!isDemoMode`), call `/patriarch/api/devotional` (A-11). |
+| PT-03  | B     | TODO   | `/patriarch/altar` family altar plans                              | A-10       | Grid of `FAMILY_ALTARS`. Each card: title, age range, minutes, scripture, opening question, activity, closing prayer. Add `/patriarch/altar/[id]` for a single plan. |
+| PT-04  | B     | TODO   | Update portfolio landing: Patriarch → live                         | PT-01      | Edit `app/page.tsx`. |
 
 ## QA (C)
 
-| ID    | Owner | Status | Title                                                  | Covers          | Notes |
-|-------|-------|--------|--------------------------------------------------------|-----------------|-------|
-| T-00  | C     | DONE   | Vitest + Playwright + CI                               | infra           | Signed off by A. 27/27 unit + 1/1 e2e. CI at `.github/workflows/test.yml`. |
-| T-01  | C     | DONE   | Unit tests for `ClassMapForm` validation               | CM-01           | Signed off by A. 14/14 passing (then 41/41 after ISS-01 fix). |
-| T-02  | C     | DONE_PENDING_A | Component tests for `PlanCard` / `PlanBoard`   | CM-02           | tests/unit/PlanBoard.test.tsx — 17/17 passing |
-| T-03  | C     | DONE_PENDING_A | E2E happy path: fill form → see plan           | CM-03           | tests/unit/ClassMapFlow.test.tsx — 10/10 passing. Component-level equivalent of E2E with stubbed fetch (deterministic). |
-| T-04  | C     | DONE_PENDING_A | E2E save + reload                              | CM-04           | tests/unit/storage.test.ts + tests/unit/SavedPlansList.test.tsx + ClassMapFlow save flow — real localStorage round-trip. |
-| T-05  | C     | DONE_PENDING_A | Demo-mode static build smoke                   | A-03, A-05      | tests/unit/build-config.test.ts (14 tests): source-level contract on next.config.ts demo-mode switch (output:export + trailingSlash + unoptimized images + basePath) and .github/workflows/deploy-pages.yml (strip api, DEMO env, build, .nojekyll, upload-pages-artifact, deploy-pages, perms). Real build verified manually (`NEXT_PUBLIC_DEMO_MODE=true ... npm run build` → 5s, produces out/index.html, out/classmap/index.html, out/classmap/result/index.html, out/classmap/saved/index.html); live integration covered by deploy-pages workflow every push. |
+ClassMap test coverage is DONE. New work starts when KindleMinds tasks hit `NEEDS_TEST`.
+
+| ID    | Owner | Status         | Title                                          | Covers          | Notes |
+|-------|-------|----------------|------------------------------------------------|-----------------|-------|
+| T-00  | C     | DONE           | Vitest + Playwright + CI                       | infra           | |
+| T-01  | C     | DONE           | Unit tests for `ClassMapForm` validation       | CM-01           | 41/41 |
+| T-02  | C     | DONE           | Component tests for `PlanCard` / `PlanBoard`   | CM-02           | 17/17 |
+| T-03  | C     | DONE           | E2E happy path: fill form → see plan           | CM-03           | 10/10 |
+| T-04  | C     | DONE           | E2E save + reload                              | CM-04           | storage 13 + SavedPlansList 6 |
+| T-05  | C     | DONE           | Demo-mode static build smoke                   | A-03, A-05      | 14 contract tests |
+| TK-01 | C     | TODO           | KindleMinds room grid render                   | KM-01           | All 5 rooms render; each links to `/kindleminds/rooms/<slug>`. |
+| TK-02 | C     | TODO           | KindleMinds room page                          | KM-02           | Slug → room dispatch; threads listed in order; missing slug → 404. |
+| TK-03 | C     | TODO           | KindleMinds thread page                        | KM-03           | Full body + every reply rendered; replies in order. |
+| TK-04 | C     | TODO           | KindleMinds e2e: landing → room → thread       | KM-01..KM-03    | Playwright nav test. |
+| TP-01 | C     | TODO           | Patriarch landing render                       | PT-01           | Day-of-week + today's theme present; both links present. |
+| TP-02 | C     | TODO           | Patriarch devotional flow                      | PT-02           | Demo path renders all four blocks (scripture, reflection, prompt, prayer); live path mocks the API. |
+| TP-03 | C     | TODO           | Patriarch family altar render                  | PT-03           | Grid renders all altars; single-altar page renders all 5 fields. |
 
 ## Conventions
 
-- File new tasks at the bottom of the relevant section with the next sequential id (`CM-07`, `T-06`, etc.)
-- When blocked, set status `BLOCKED` and add a `Notes` line starting with `BLOCKED:` explaining why
-- Reference `lib/types.ts` for all data shapes — do not redeclare types locally
+- File new tasks at the bottom of the relevant section with the next sequential id.
+- When blocked, set status `BLOCKED` and add a `Notes` line starting with `BLOCKED:` explaining why.
+- Reference `lib/*-types.ts` for all data shapes — do not redeclare types locally.
+- Use the editorial design vocabulary in `app/globals.css` (kicker, dek, lead, font-display, accent-clay, accent-ink). Don't invent parallel utilities.
+- **Stage by explicit path** (`git add <file>`); never `git add -A` or `git add .` — see agent prompts for why.
