@@ -21,7 +21,7 @@ Statuses: `TODO` → `IN_PROGRESS` → `NEEDS_TEST` → `DONE_PENDING_A` → `DO
 |--------|-------|--------|-------------------------------------------------------------|------------|-------|
 | CM-01  | B     | DONE           | `ClassMapForm` component                           | A-01       | Verified by C — 41/41 tests after ISS-01 fix. Signed off by A. |
 | CM-02  | B     | DONE_PENDING_A | `PlanCard` + `PlanBoard` components                 | A-01       | Verified by C — tests/unit/PlanBoard.test.tsx (17 tests). 5-col day grid Mon..Fri, session counts, subject styling, materials chips, summary toggle, missing-day fallback, formatMinutes (45 min / 1h / 1h 30m), PE+Language labels. |
-| CM-03  | B     | TODO   | `/classmap/result` page wiring form → API → board           | CM-01, CM-02, A-02, A-03 | Reads `NEXT_PUBLIC_DEMO_MODE`. If true, calls `getDemoPlan(input)`. Else POSTs to `/api/generate`. |
+| CM-03  | B     | NEEDS_TEST | `/classmap/result` page wiring form → API → board       | CM-01, CM-02, A-02, A-03 | Reads `NEXT_PUBLIC_DEMO_MODE`. If true, calls `getDemoPlan(input)`. Else POSTs to `/api/generate`. Pages: `app/classmap/page.tsx` + `app/classmap/result/page.tsx` both render `<ClassMapFlow />`. |
 | CM-04  | B     | TODO   | `/classmap/saved` + `lib/storage.ts` (localStorage)         | CM-02      | Save button on result page; saved list page; delete button. |
 | CM-05  | B     | TODO   | Loading + error states across `/classmap/*`                 | CM-03      | shadcn skeleton + alert. |
 | CM-06  | B     | TODO   | Print stylesheet (Export PDF stretch)                       | CM-02      | `@media print` in `app/globals.css`. |
