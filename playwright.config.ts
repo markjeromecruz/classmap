@@ -27,5 +27,10 @@ export default defineConfig({
     timeout: 120_000,
     stdout: "ignore",
     stderr: "pipe",
+    env: {
+      // Demo mode lets e2e tests submit the form without hitting the live
+      // Claude binary. Tests that need the live path should override.
+      NEXT_PUBLIC_DEMO_MODE: "true",
+    },
   },
 });

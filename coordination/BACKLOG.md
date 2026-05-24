@@ -24,7 +24,7 @@ Statuses: `TODO` → `IN_PROGRESS` → `NEEDS_TEST` → `DONE_PENDING_A` → `DO
 | CM-03  | B     | DONE_PENDING_A | `/classmap/result` page wiring form → API → board   | CM-01, CM-02, A-02, A-03 | Verified by C — tests/unit/ClassMapFlow.test.tsx (10 tests). Demo happy path, regenerate, clear, save, live fetch (200/error/throw), aria-busy, data-status. |
 | CM-04  | B     | DONE_PENDING_A | `/classmap/saved` + `lib/storage.ts` (localStorage) | CM-02      | Verified by C — tests/unit/storage.test.ts (13 tests, real localStorage) + tests/unit/SavedPlansList.test.tsx (6 tests). Round-trip, dedupe-by-id, head-ordering, delete, corruption resilience. |
 | CM-05  | B     | NEEDS_TEST | Loading + error states across `/classmap/*`             | CM-03      | shadcn skeleton + alert. `PlanBoardSkeleton` shown during submit; shadcn `Alert variant=destructive` for errors; `Skeleton` block during saved-plans hydration. |
-| CM-06  | B     | NEEDS_TEST | Print stylesheet (Export PDF stretch)                   | CM-02      | `@media print` extended in `app/globals.css`: hides form/error/Save/Delete/submit chrome, stacks day columns vertically, drops fills/shadows, outlines badges, avoids heading-only page breaks. |
+| CM-06  | B     | DONE_PENDING_A | Print stylesheet (Export PDF stretch)               | CM-02      | Verified by C — tests/unit/print-stylesheet.test.ts (12 source-level tests on the @media print block) + tests/e2e/print.spec.ts (1 chromium test via `page.emulateMedia({media:"print"})` asserts form + submit hidden). |
 
 ## QA (C)
 
