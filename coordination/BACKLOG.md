@@ -51,7 +51,7 @@ Build the daily devotional + family altar demo. AI on for local runs (via `lib/p
 |--------|-------|--------|--------------------------------------------------------------------|------------|-------|
 | PT-01  | B     | DONE_PENDING_A | `/patriarch` landing                                       | A-10       | Verified by C — tests/unit/patriarch-landing.test.tsx (8 tests). Masthead h1+dek+back link, patriarch-day shows day-of-week+long date (clock pinned), today-card with theme h2 + scriptureReference, both CTA links present with documented targets, altar plan count footer. |
 | PT-02  | B     | DONE_PENDING_A | `/patriarch/today` daily devotional view                   | A-10       | Verified by C — DevotionalView (9 tests), LiveDevotional (7 tests), today-page dispatch (3 tests). All 6 devotional sub-slots present per devotional; live mode: loading skeleton has aria-busy+aria-live, fetch happy path swaps to DevotionalView, POST body is "{}", error paths (non-200, throw, schema-invalid) all surface destructive Alert; page data-mode reflects isDemoMode. |
-| PT-03  | B     | NEEDS_TEST | `/patriarch/altar` family altar plans                          | A-10       | `/patriarch/altar` lists `FAMILY_ALTARS` via `AltarCard`. `/patriarch/altar/[id]` is SSG (generateStaticParams + dynamicParams=false) with scripture blockquote (clay rule), opening question, activity, closing prayer. Selectors: `data-slot="patriarch-altar"`, `data-slot="altar-grid"[data-count]`, `data-slot="altar-card"[data-altar-id]`, `data-slot="altar-detail"[data-altar-id]` with scripture/opening-question/activity/closing-prayer sub-slots. |
+| PT-03  | B     | DONE_PENDING_A | `/patriarch/altar` family altar plans                      | A-10       | Verified by C — tests/unit/patriarch-altar.test.tsx (19 tests). Grid page (slots + count + per-card data-altar-id + href), AltarCard isolation (default + custom basePath, h2 title + ageRange + minutes + scriptureReference + openingQuestion), detail page across all altars (4 sub-slots present, h1 title, blockquote scripture, content placement, back link), generateStaticParams = FAMILY_ALTARS, dynamicParams=false, notFound() on unknown, generateMetadata branches. |
 | PT-04  | B     | TODO   | Update portfolio landing: Patriarch → live                         | PT-01      | Edit `app/page.tsx`. |
 
 ## QA (C)
@@ -72,7 +72,7 @@ ClassMap test coverage is DONE. New work starts when KindleMinds tasks hit `NEED
 | TK-04 | C     | TODO           | KindleMinds e2e: landing → room → thread       | KM-01..KM-03    | Playwright nav test. |
 | TP-01 | C     | DONE_PENDING_A | Patriarch landing render                       | PT-01           | tests/unit/patriarch-landing.test.tsx — 8/8 passing. |
 | TP-02 | C     | DONE_PENDING_A | Patriarch devotional flow                      | PT-02           | tests/unit/patriarch-{DevotionalView,LiveDevotional,today-page}.test.tsx — 19/19 passing. |
-| TP-03 | C     | TODO           | Patriarch family altar render                  | PT-03           | Grid renders all altars; single-altar page renders all 5 fields. |
+| TP-03 | C     | DONE_PENDING_A | Patriarch family altar render                  | PT-03           | tests/unit/patriarch-altar.test.tsx — 19/19 passing. |
 
 ## Conventions
 
