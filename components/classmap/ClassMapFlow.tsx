@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { isDemoMode, SITE_BASE_PATH } from "@/lib/env";
 import { getDemoPlan } from "@/lib/demo-data";
@@ -10,6 +11,7 @@ import type { LessonPlan, LessonPlanInput } from "@/lib/types";
 
 import { ClassMapForm } from "./ClassMapForm";
 import { PlanBoard } from "./PlanBoard";
+import { PlanBoardSkeleton } from "./PlanBoardSkeleton";
 
 type Status = "idle" | "loading" | "success" | "error";
 
@@ -97,15 +99,17 @@ export function ClassMapFlow({ forceDemo }: ClassMapFlowProps = {}) {
         />
       </section>
 
+      {status === "loading" ? <PlanBoardSkeleton /> : null}
+
       {status === "error" && error ? (
-        <div
-          role="alert"
+        <Alert
+          variant="destructive"
           data-slot="classmap-flow-error"
-          className="rounded-xl border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive"
+          className="bg-destructive/10"
         >
-          <p className="font-medium">Couldn&rsquo;t generate a plan.</p>
-          <p className="mt-1 text-destructive/90">{error}</p>
-        </div>
+          <AlertTitle>Couldn&rsquo;t generate a plan.</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       ) : null}
 
       {status === "success" && plan ? (

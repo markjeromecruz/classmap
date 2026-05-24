@@ -23,7 +23,7 @@ Statuses: `TODO` → `IN_PROGRESS` → `NEEDS_TEST` → `DONE_PENDING_A` → `DO
 | CM-02  | B     | DONE_PENDING_A | `PlanCard` + `PlanBoard` components                 | A-01       | Verified by C — tests/unit/PlanBoard.test.tsx (17 tests). 5-col day grid Mon..Fri, session counts, subject styling, materials chips, summary toggle, missing-day fallback, formatMinutes (45 min / 1h / 1h 30m), PE+Language labels. |
 | CM-03  | B     | DONE_PENDING_A | `/classmap/result` page wiring form → API → board   | CM-01, CM-02, A-02, A-03 | Verified by C — tests/unit/ClassMapFlow.test.tsx (10 tests). Demo happy path, regenerate, clear, save, live fetch (200/error/throw), aria-busy, data-status. |
 | CM-04  | B     | DONE_PENDING_A | `/classmap/saved` + `lib/storage.ts` (localStorage) | CM-02      | Verified by C — tests/unit/storage.test.ts (13 tests, real localStorage) + tests/unit/SavedPlansList.test.tsx (6 tests). Round-trip, dedupe-by-id, head-ordering, delete, corruption resilience. |
-| CM-05  | B     | TODO   | Loading + error states across `/classmap/*`                 | CM-03      | shadcn skeleton + alert. |
+| CM-05  | B     | NEEDS_TEST | Loading + error states across `/classmap/*`             | CM-03      | shadcn skeleton + alert. `PlanBoardSkeleton` shown during submit; shadcn `Alert variant=destructive` for errors; `Skeleton` block during saved-plans hydration. |
 | CM-06  | B     | NEEDS_TEST | Print stylesheet (Export PDF stretch)                   | CM-02      | `@media print` extended in `app/globals.css`: hides form/error/Save/Delete/submit chrome, stacks day columns vertically, drops fills/shadows, outlines badges, avoids heading-only page breaks. |
 
 ## QA (C)

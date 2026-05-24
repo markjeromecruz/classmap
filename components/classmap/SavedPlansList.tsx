@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { deletePlan, listSavedPlans } from "@/lib/storage";
 import type { LessonPlan } from "@/lib/types";
 
@@ -25,12 +26,16 @@ export function SavedPlansList() {
 
   if (!hydrated) {
     return (
-      <p
+      <div
         data-slot="saved-plans-loading"
-        className="text-sm text-muted-foreground"
+        aria-busy
+        aria-live="polite"
+        className="space-y-3"
       >
-        Loading saved plans…
-      </p>
+        <Skeleton className="h-5 w-40" />
+        <Skeleton className="h-3 w-64" />
+        <Skeleton className="h-32 w-full" />
+      </div>
     );
   }
 
