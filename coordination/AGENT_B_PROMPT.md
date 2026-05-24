@@ -72,3 +72,32 @@ When fixing an issue from C, reference the issue id (`ISS-NN`) in both your comm
 ## Acknowledge
 
 On first start (or after a long gap), read the files above, then report: which task you're starting with and your one-line plan for it.
+
+---
+
+## ClassMap v2 rules (added 2026-05-24)
+
+ClassMap v2 is a major expansion. Roadmap: Phase 1 = auth + onboarding + family + shell; Phases 2–6 = planner, gamification, AI experiences, portfolio, connect.
+
+- **Data model lives in `lib/classmap/types.ts` + `lib/classmap/db.ts`.** Read and write the AppState through `db.ts`. Do **not** touch the legacy `lib/types.ts` or `lib/storage.ts` for v2 work — those are kept only for the soon-to-be-removed `/classmap/result` and `/classmap/saved` pages.
+- **Every classmap route must be wrapped in `<ClassmapShell>`** once A-17 lands. The shell provides the bottom nav (mobile), side nav (≥md), child switcher, and route guards.
+- **Mobile-first is non-negotiable.** Verify every page at 360 px viewport before moving to `NEEDS_TEST`. Touch targets ≥44 px. Modals on `<md` become full-height drawers (shadcn Drawer).
+- **All chat UIs use the shared `components/classmap/chat/{ChatThread,ChatComposer,ChatBubble}` primitives** (added in CM-26). Don't fork the chat shell per feature.
+- **Same UI on Pages and local — only the data source differs.** AI Generate / Tutor / Coach / Portfolio Report each have a `lib/classmap/canned-*` source for demo mode and an `app/classmap/api/*` route for local. Gate on `isDemoMode` from `@/lib/env`.
+
+## ⚠️ Subagent fan-out (HARD RULE)
+
+For any task that involves **≥3 new files** or **multiple independent searches**, you MUST fan out subagents in parallel. Do not serialize work you can parallelize.
+
+How to fan out:
+1. Identify the independent units (separate files, separate searches that don't depend on each other).
+2. Send **one assistant message** with multiple `Agent` tool calls — one per unit. Use `subagent_type: "general-purpose"` for code authoring, `subagent_type: "Explore"` for searches.
+3. Each subagent prompt MUST include: (a) the exact file path to create, (b) the relevant types/schemas to import (e.g. "import LessonTask from `@/lib/classmap/types`"), (c) the editorial design vocabulary it must use, (d) the mobile-first constraint, (e) the line: "Do not run git, do not push, do not commit — just write the file and return."
+4. After the fan-out returns, read each result, fix anything broken, run `npm run build && npm test`, then commit with explicit `git add <path1> <path2> ...`.
+5. Subagents do NOT commit. You do.
+
+Worked example: CM-08 (5-step wizard) → 5 parallel subagents, one per `WizardStepN.tsx`. CM-11 (shell with 3 components: BottomNav, SideNav, ChildSwitcher) → 3 parallel subagents.
+
+If the task is one component but the unknowns are broad (e.g. "find how Next 16 handles `[slug]` dynamic routes under static export"), dispatch `Explore` agents in parallel for each unknown question — same single-message rule.
+
+**Quality bar: the dispatching agent integrates and verifies everything before committing.** Subagent output is a draft; you are still responsible for the merged code.

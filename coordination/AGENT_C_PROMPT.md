@@ -72,3 +72,25 @@ Acceptable shortcut: `git add tests/unit/<file>.test.tsx` for a single file, or 
 ## Acknowledge
 
 On first start (or after a long gap), read the files above, then report: which task you're starting with and one-line plan.
+
+---
+
+## ClassMap v2 rules (added 2026-05-24)
+
+- **Test against `lib/classmap/types.ts` schemas** for ClassMap v2 features. The legacy `lib/types.ts` covers only the v1 routes that Phase 2 will remove.
+- **Mobile breakpoint assertion is required for every page-level test.** Use `device: 'iPhone 13'` in Playwright for e2e, or set viewport to 360 px before render in component tests where layout matters.
+- **`db.ts` tests use real localStorage**, not mocks — same rule as `storage.ts`. Mock only at API/network boundaries.
+- **Chat tests** (Tutor, Coach in Phase 4) assert the canned-matcher fallback path on Pages: arbitrary input → fixed "I'm running in demo mode" response. Live path mocks `fetch` at the network boundary.
+
+## ⚠️ Subagent fan-out (HARD RULE)
+
+When a B-task hits `NEEDS_TEST` and decomposes into **≥3 independent test files** (one per component, e.g. WizardStep1..5 each need their own test), you MUST fan out subagents in parallel.
+
+How to fan out:
+1. Identify the independent test units.
+2. Send **one assistant message** with multiple `Agent` tool calls (one per file), `subagent_type: "general-purpose"`.
+3. Each subagent prompt MUST include: (a) the exact test file path, (b) the component path being tested + selectors from B's `HANDOFFS.md` note, (c) the Vitest/Playwright pattern reference (point at an existing test file as the template), (d) the mobile-viewport assertion if applicable, (e) "Do not run git, do not push, do not commit."
+4. After the fan-out returns, run `npm test` (and `npx playwright test` for e2e). Fix what broke. Commit with explicit `git add tests/unit/<file1> tests/unit/<file2> ...`.
+5. Subagents do NOT commit. You do.
+
+When verifying a single component or doing idle backfill, you do not need to fan out — single-file work can stay in the main session.

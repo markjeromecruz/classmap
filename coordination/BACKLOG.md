@@ -7,77 +7,166 @@ Statuses: `TODO` → `IN_PROGRESS` → `NEEDS_TEST` → `DONE_PENDING_A` → `DO
 | ID    | Owner | Status        | Title                                              | Notes |
 |-------|-------|---------------|----------------------------------------------------|-------|
 | A-01  | A     | DONE          | Scaffold Next.js + TS + Tailwind + shadcn          | Next 16, React 19, Tailwind 4 |
-| A-02  | A     | DONE          | Claude headless wrapper + Zod schema               | `lib/claude.ts` spawns `claude -p` CLI. Parses JSON, Zod-validates against `lessonPlanSchema`. |
-| A-03  | A     | DONE          | ClassMap demo-mode switch + 3 canned plans         | `lib/env.ts`, `lib/demo-data.ts` (early/upper/teen) |
+| A-02  | A     | DONE          | Claude headless wrapper (ClassMap v1)              | `lib/claude.ts` |
+| A-03  | A     | DONE          | ClassMap v1 demo-mode + canned plans               | `lib/env.ts`, `lib/demo-data.ts` |
 | A-04  | A     | DONE          | Portfolio landing                                  | `app/page.tsx` + `components/portfolio/AppCard.tsx` |
-| A-05  | A     | DONE          | GitHub Pages workflow                              | `.github/workflows/deploy-pages.yml`; strips api/ pre-build, sets `NEXT_PUBLIC_BASE_PATH=/classmap` |
+| A-05  | A     | DONE          | GitHub Pages workflow                              | `.github/workflows/deploy-pages.yml` |
 | A-06  | A     | DONE          | Coordination files + agent prompts                 | this folder |
-| A-07  | A     | DONE          | Push to GitHub + enable Pages                      | Live: https://markjeromecruz.github.io/classmap/ |
-| A-08  | A     | DONE          | Fix ISS-02: tsconfig alias in tests                | tsconfig.test.json + vite-tsconfig-paths plugin |
-| A-09  | A     | DONE          | Editorial redesign (Fraunces + Instrument Sans)    | Warm-cream + ink-blue + terracotta palette, masthead, kicker/dek/lead/drop-cap utilities. Resolves AppCard half of ISS-03. |
-| A-10  | A     | DONE          | KindleMinds + Patriarch types & demo data          | `lib/kindleminds-types.ts`, `lib/kindleminds-demo-data.ts` (5 rooms, 10 threads), `lib/patriarch-types.ts`, `lib/patriarch-demo-data.ts` (3 devotionals, 3 family altars, 2 journal entries). |
-| A-11  | A     | TODO          | Patriarch Claude wrapper (lib/patriarch-claude.ts) | Headless `claude -p` with a devotional system prompt; returns Zod-validated `Devotional`. Mirror the ClassMap wrapper. Schedule once KM ships. |
-| A-12  | A     | TODO          | Update portfolio landing as apps come live         | Flip KindleMinds and Patriarch from `coming-soon` → `live` when their `/<app>` route exists. Update `app/page.tsx`. |
-| A-13  | A     | TODO          | Sub-app routing under static export (basePath)     | Verify `/kindleminds` and `/patriarch` static-export correctly under `/classmap` basePath. May require trailingSlash audit. |
+| A-07  | A     | DONE          | Push to GitHub + enable Pages                      | https://markjeromecruz.github.io/classmap/ |
+| A-08  | A     | DONE          | Fix ISS-02 — tsconfig alias in tests               | tsconfig.test.json |
+| A-09  | A     | DONE          | Editorial redesign                                 | Fraunces + Instrument Sans, warm cream |
+| A-10  | A     | DONE          | KindleMinds + Patriarch types & demo data          | |
+| A-11  | A     | DONE          | Patriarch Claude wrapper                           | `lib/patriarch-claude.ts` + POST route |
+| A-12  | A     | DONE          | Portfolio landing flip (KM + PT → live)            | Folded into B's KM-05 + PT-04 commits. |
+| A-13  | A     | TODO          | Sub-app routing under static export (basePath)     | Verify all sub-app routes static-export correctly under `/classmap` basePath. Can wait until ClassMap v2 stabilises. |
 
-## ClassMap MVP (B)
+### ClassMap v2 foundation (A) — Phase 1
 
-| ID     | Owner | Status         | Title                                                | Depends on | Notes |
-|--------|-------|----------------|------------------------------------------------------|------------|-------|
-| CM-01  | B     | DONE           | `ClassMapForm` component                             | A-01       | Verified by C; 41/41 after ISS-01 fix. |
-| CM-02  | B     | DONE           | `PlanCard` + `PlanBoard` components                  | A-01       | Verified by C; 17 tests. |
-| CM-03  | B     | DONE           | `/classmap/result` page wiring form → API → board    | CM-01, CM-02, A-02, A-03 | Verified by C; 10-test flow incl. demo/live, regen, save. |
-| CM-04  | B     | DONE           | `/classmap/saved` + `lib/storage.ts`                 | CM-02      | Verified by C; storage 13 tests + SavedPlansList 6 tests. |
-| CM-05  | B     | DONE           | Loading + error states across `/classmap/*`          | CM-03      | Verified by C; PlanBoardSkeleton 6 tests + flow loading/error 2 tests. |
-| CM-06  | B     | DONE           | Print stylesheet                                     | CM-02      | Verified by C; 12 source-level + 1 chromium e2e. |
+| ID    | Owner | Status        | Title                                                                  | Notes |
+|-------|-------|---------------|------------------------------------------------------------------------|-------|
+| A-14  | A     | IN_PROGRESS   | `lib/classmap/types.ts` + `lib/classmap/db.ts`                         | Types shipped; db.ts coming via subagent fan-out. v2 schema with Child, LessonPlan, LessonTask, PortfolioEntry, WorkSample, AppState. `STORAGE_KEY = "classmap:state:v2"`. db.ts must include v1 → v2 migration helper. |
+| A-15  | A     | TODO          | `lib/classmap/auth.ts` — mock session                                  | signIn / signUp / signOut / `useSession()` hook. No real network. localStorage-backed. |
+| A-16  | A     | TODO          | `lib/classmap/state-requirements.ts` — 10 priority states              | CA, TX, NY, FL, PA, IL, OH, GA, NC, WA: hoursPerYear, subjectsRequired, portfolioRequired, testingRequired, notificationOfIntent, notes. Stub other 40 with `{ code, name, ...nulls }`. |
+| A-17  | A     | TODO          | `components/classmap/shell/ClassmapShell.tsx` skeleton                 | Mobile bottom nav + side nav (≥md), child switcher, current-path highlight, `useRedirectIfNoSession` + `useRedirectIfNoChild` guards. Mobile-first. |
+| A-18  | A     | TODO          | Canned dialogue fixtures                                               | `lib/classmap/canned-tutor.ts` + `lib/classmap/canned-coach.ts` — 5–8 starter prompts each with matchers. |
 
-## KindleMinds MVP (B)
+### ClassMap v2 foundation (A) — Phases 2-6 (deferred — shipped per phase)
 
-Build the static social-hub demo. No backend, no auth, no real posting — data comes from `lib/kindleminds-demo-data.ts`. Polish the editorial look; this should feel like an actual periodical issue, not a forum.
+| ID    | Owner | Status | Title |
+|-------|-------|--------|-------|
+| A-19  | A     | TODO   | Extend `lib/claude.ts` → `generatePlanForChild(child)` emits LessonTask[] |
+| A-20  | A     | TODO   | Swap `app/classmap/api/generate-plan/route.ts` to new shape |
+| A-21  | A     | TODO   | `lib/classmap/tutor-claude.ts` |
+| A-22  | A     | TODO   | `lib/classmap/coach-claude.ts` |
+| A-23  | A     | TODO   | `app/classmap/api/tutor/route.ts` + `app/classmap/api/coach/route.ts` |
+| A-24  | A     | TODO   | `lib/classmap/portfolio-claude.ts` + `app/classmap/api/portfolio-report/route.ts` |
+| A-25  | A     | TODO   | Canned portfolio report (demo mode) |
+| A-26  | A     | TODO   | `lib/classmap/connect-data.ts` (5 co-op + 4 charter directories) |
+| A-27  | A     | TODO   | State requirements expanded to all 50 states |
+
+## ClassMap MVP (B) — v1, complete
+
+| ID     | Owner | Status | Title | Notes |
+|--------|-------|--------|-------|-------|
+| CM-01  | B     | DONE   | `ClassMapForm` component                             | |
+| CM-02  | B     | DONE   | `PlanCard` + `PlanBoard` components                  | |
+| CM-03  | B     | DONE   | `/classmap/result` page wiring form → API → board    | **Removed during Phase 2 migration** |
+| CM-04  | B     | DONE   | `/classmap/saved` + `lib/storage.ts`                 | **Removed during Phase 2 migration** |
+| CM-05  | B     | DONE   | Loading + error states across `/classmap/*`          | |
+| CM-06  | B     | DONE   | Print stylesheet                                     | |
+
+## ClassMap v2 (B) — Phase 1 (auth + onboarding + shell + family)
+
+All Phase 1 B tasks have the same hard requirements:
+- **Wrap every classmap page in `<ClassmapShell>` once A-17 lands.**
+- **Use `lib/classmap/types.ts` and `lib/classmap/db.ts` for all reads/writes.** Do not touch `lib/storage.ts` or `lib/types.ts` directly.
+- **Mobile-first** — verify at 360 px viewport before NEEDS_TEST.
+- **Fan out subagents** for any task with ≥3 new files (see AGENT_B_PROMPT.md for the rule).
 
 | ID     | Owner | Status | Title                                                              | Depends on | Notes |
 |--------|-------|--------|--------------------------------------------------------------------|------------|-------|
-| KM-01  | B     | DONE_PENDING_A | `/kindleminds` landing page with rooms grid                | A-10       | Verified by C — tests/unit/kindleminds-landing.test.tsx (16 tests). Masthead, rooms-grid[data-count=5], one room-card per CURRICULUM_STYLES slug, links to /kindleminds/rooms/<slug>, h2 names, summed member count footer, RoomCard isolation. |
-| KM-02  | B     | DONE_PENDING_A | `/kindleminds/rooms/[slug]` page with thread list          | KM-01      | Verified by C — tests/unit/kindleminds-room.test.tsx (13 tests). All 5 slugs render as async server component, threads-list[data-count] matches getThreadsForRoom, threads in source order, per-card data-thread-id + data-room-slug. generateStaticParams = CURRICULUM_STYLES; dynamicParams=false; notFound() on unknown; generateMetadata branches. Cross-rooms: total cards = THREADS.length. |
-| KM-03  | B     | DONE_PENDING_A | `/kindleminds/rooms/[slug]/[threadId]` thread + replies   | KM-02      | Verified by C — tests/unit/kindleminds-thread.test.tsx (19 tests). All 10 prerendered threads render with documented slots (thread-title h1, thread-body, thread-views, thread-reply-count, thread-replies[data-count], per-reply thread-reply[data-reply-id] + thread-reply-body). Empty-replies branch covered. generateStaticParams = THREADS; dynamicParams=false; notFound() on unknown OR mismatched slug. generateMetadata branches. |
-| KM-04  | B     | DONE_PENDING_A | `components/kindleminds/RoomCard.tsx` + `ThreadCard.tsx`    | KM-01      | RoomCard verified with KM-01. ThreadCard verified — tests/unit/kindleminds-ThreadCard.test.tsx (15 tests): data slots, default href, custom basePath, h3 title, author + Intl date, reply pluralization (0/1/2), view count, preview truncation at word boundary + ellipsis, no-space hard-cut, full-fixture render sanity. |
-| KM-05  | B     | DONE_PENDING_A | Update portfolio landing: KindleMinds → live               | KM-01, KM-02 | Verified by C — tests/unit/portfolio-landing.test.tsx (10 tests). All three apps live with their hrefs (/classmap, /kindleminds, /patriarch); each card shows "Now serving" + "Read on" (no "Awaiting volume"); KindleMinds category="Community"; highlights mention five rooms (proof copy was rewritten). Masthead, method columns, colophon→GitHub all verified. |
+| CM-07  | B     | TODO   | `/classmap/login` + `/classmap/signup` (mock auth screens)         | A-14, A-15 | Email + 6-digit OTP input (cosmetic) + "Continue with Google" button (cosmetic). Submits to `auth.signIn` / `auth.signUp`. Signup redirects to `/classmap/onboarding`. Login redirects to `/classmap`. Editorial vocabulary throughout (kicker, font-display headings, accent-clay CTAs). Stable selectors: `data-slot="login-form" / "signup-form" / "otp-input" / "google-button"`. |
+| CM-08  | B     | TODO   | `/classmap/onboarding` — 5-step wizard                             | A-14       | Steps: (1) child name, (2) age + grade, (3) US state (autocomplete), (4) learning style + curriculum approach, (5) priority subjects (multi-select, drag-to-order). `db.createChild` on finish (auto-derives ageBand + avatarColor), redirect `/classmap/today`. shadcn Dialog/Drawer responsive. **5 wizard steps = perfect fan-out candidate (5 parallel subagents).** Selectors: `data-slot="wizard"` + `data-step="N"`. |
+| CM-09  | B     | TODO   | `/classmap/family` — list profiles + state req panel               | A-14, A-16 | Per-child card with avatar, name, age, grade, XP total, streak. "Add child" reopens wizard. Collapsible state-requirement panel per child (uses `getStateRequirement(child.state)`). Quick-link to Portfolio export + Logout button. Selectors: `data-slot="family-list"`, `data-child-id`. |
+| CM-10  | B     | TODO   | `/classmap` shell route — IA redirect logic                        | A-14, A-15 | No session → `/classmap/login`. Session + 0 children → `/classmap/onboarding`. Session + ≥1 child → `/classmap/today`. Renders nothing on the path itself (or a tiny "Loading…" before redirect). |
+| CM-11  | B     | TODO   | Mobile bottom nav + side nav + child switcher                      | A-17       | Folds into `ClassmapShell`. Bottom nav (Today / Week / Tutor / Progress / More) on `<md`. Side nav with same items on `≥md`. Child switcher (avatar + name + dropdown) in shell header on every classmap route. Active-path highlight. Touch targets ≥44 px. |
 
-## Patriarch MVP (B)
+## ClassMap v2 (B) — Phases 2-6 (rows seeded; details added at phase kickoff)
 
-Build the daily devotional + family altar demo. AI on for local runs (via `lib/patriarch-claude.ts` once A ships A-11), canned in demo mode (from `lib/patriarch-demo-data.ts`).
+| ID     | Owner | Status | Title | Phase |
+|--------|-------|--------|-------|-------|
+| CM-12  | B     | TODO   | `/classmap/today` — Today View | 2 |
+| CM-13  | B     | TODO   | `/classmap/week` — Week View + drag-and-drop | 2 |
+| CM-14  | B     | TODO   | TaskModal — add/edit/delete | 2 |
+| CM-15  | B     | TODO   | "AI Generate" button + modal | 2 |
+| CM-16  | B     | TODO   | Extended subject color tokens | 2 |
+| CM-17  | B     | TODO   | Child switcher persistence | 2 |
+| CM-18  | B     | TODO   | `lib/classmap/xp.ts` — XP/streak/badge pure functions | 3 |
+| CM-19  | B     | TODO   | +XP toast + card pop animation | 3 |
+| CM-20  | B     | TODO   | All-done celebration screen | 3 |
+| CM-21  | B     | TODO   | `/classmap/progress` — dashboard + recharts | 3 |
+| CM-22  | B     | TODO   | Per-child progress filtering | 3 |
+| CM-23  | B     | TODO   | `/classmap/tutor/[taskId]` — full-screen chat | 4 |
+| CM-24  | B     | TODO   | `/classmap/coach` — chat with family context | 4 |
+| CM-25  | B     | TODO   | Socratic-style tutor prompt | 4 |
+| CM-26  | B     | TODO   | `components/classmap/chat/*` shared primitives | 4 |
+| CM-27  | B     | TODO   | `/classmap/portfolio` — upload UI + list | 5 |
+| CM-28  | B     | TODO   | Generate-report button + markdown render + download | 5 |
+| CM-29  | B     | TODO   | `/classmap/market` — merchant + work upload tabs | 5 |
+| CM-30  | B     | TODO   | File size + type validation + friendly errors | 5 |
+| CM-31  | B     | TODO   | Date range filter on portfolio | 5 |
+| CM-32  | B     | TODO   | `/classmap/connect` — co-ops + charter tabs | 6 |
+| CM-33  | B     | TODO   | Family page polish + state req + quick-links | 6 |
+| CM-34  | B     | TODO   | Mobile polish pass — touch targets + bottom nav active states | 6 |
 
-| ID     | Owner | Status | Title                                                              | Depends on | Notes |
-|--------|-------|--------|--------------------------------------------------------------------|------------|-------|
-| PT-01  | B     | DONE_PENDING_A | `/patriarch` landing                                       | A-10       | Verified by C — tests/unit/patriarch-landing.test.tsx (8 tests). Masthead h1+dek+back link, patriarch-day shows day-of-week+long date (clock pinned), today-card with theme h2 + scriptureReference, both CTA links present with documented targets, altar plan count footer. |
-| PT-02  | B     | DONE_PENDING_A | `/patriarch/today` daily devotional view                   | A-10       | Verified by C — DevotionalView (9 tests), LiveDevotional (7 tests), today-page dispatch (3 tests). All 6 devotional sub-slots present per devotional; live mode: loading skeleton has aria-busy+aria-live, fetch happy path swaps to DevotionalView, POST body is "{}", error paths (non-200, throw, schema-invalid) all surface destructive Alert; page data-mode reflects isDemoMode. |
-| PT-03  | B     | DONE_PENDING_A | `/patriarch/altar` family altar plans                      | A-10       | Verified by C — tests/unit/patriarch-altar.test.tsx (19 tests). Grid page (slots + count + per-card data-altar-id + href), AltarCard isolation (default + custom basePath, h2 title + ageRange + minutes + scriptureReference + openingQuestion), detail page across all altars (4 sub-slots present, h1 title, blockquote scripture, content placement, back link), generateStaticParams = FAMILY_ALTARS, dynamicParams=false, notFound() on unknown, generateMetadata branches. |
-| PT-04  | B     | DONE_PENDING_A | Update portfolio landing: Patriarch → live                 | PT-01      | Verified by C — tests/unit/portfolio-landing.test.tsx covers status="live"+href="/patriarch" alongside ClassMap+KindleMinds (KM-05 work); added specific assertion that Patriarch highlights mention "daily devotional" and "family altar plans" (the shipped PT-02/PT-03 features, not the older Iron Circle / Faith Coach copy). |
+## KindleMinds MVP (B) — complete
 
-## QA (C)
+| ID     | Owner | Status | Title |
+|--------|-------|--------|-------|
+| KM-01  | B     | DONE   | `/kindleminds` landing + rooms grid |
+| KM-02  | B     | DONE   | `/kindleminds/rooms/[slug]` |
+| KM-03  | B     | DONE   | `/kindleminds/rooms/[slug]/[threadId]` |
+| KM-04  | B     | DONE   | `RoomCard` + `ThreadCard` |
+| KM-05  | B     | DONE   | Portfolio landing: KindleMinds → live |
 
-ClassMap test coverage is DONE. New work starts when KindleMinds tasks hit `NEEDS_TEST`.
+## Patriarch MVP (B) — complete
 
-| ID    | Owner | Status         | Title                                          | Covers          | Notes |
-|-------|-------|----------------|------------------------------------------------|-----------------|-------|
-| T-00  | C     | DONE           | Vitest + Playwright + CI                       | infra           | |
-| T-01  | C     | DONE           | Unit tests for `ClassMapForm` validation       | CM-01           | 41/41 |
-| T-02  | C     | DONE           | Component tests for `PlanCard` / `PlanBoard`   | CM-02           | 17/17 |
-| T-03  | C     | DONE           | E2E happy path: fill form → see plan           | CM-03           | 10/10 |
-| T-04  | C     | DONE           | E2E save + reload                              | CM-04           | storage 13 + SavedPlansList 6 |
-| T-05  | C     | DONE           | Demo-mode static build smoke                   | A-03, A-05      | 14 contract tests |
-| TK-01 | C     | DONE_PENDING_A | KindleMinds room grid render                   | KM-01           | tests/unit/kindleminds-landing.test.tsx — 16/16 passing. |
-| TK-02 | C     | DONE_PENDING_A | KindleMinds room page                          | KM-02           | tests/unit/kindleminds-room.test.tsx + kindleminds-ThreadCard.test.tsx — 28/28 passing. |
-| TK-03 | C     | DONE_PENDING_A | KindleMinds thread page                        | KM-03           | tests/unit/kindleminds-thread.test.tsx — 19/19 passing. |
-| TK-04 | C     | DONE_PENDING_A | KindleMinds e2e: landing → room → thread       | KM-01..KM-03    | tests/e2e/kindleminds-nav.spec.ts — landing→room→thread→back→back, asserts URL + data-slot at each hop. 404 path covered at the unit layer (next dev returns 500 for static-export notFound). |
-| TP-01 | C     | DONE_PENDING_A | Patriarch landing render                       | PT-01           | tests/unit/patriarch-landing.test.tsx — 8/8 passing. |
-| TP-02 | C     | DONE_PENDING_A | Patriarch devotional flow                      | PT-02           | tests/unit/patriarch-{DevotionalView,LiveDevotional,today-page}.test.tsx — 19/19 passing. |
-| TP-03 | C     | DONE_PENDING_A | Patriarch family altar render                  | PT-03           | tests/unit/patriarch-altar.test.tsx — 19/19 passing. |
+| ID     | Owner | Status | Title |
+|--------|-------|--------|-------|
+| PT-01  | B     | DONE   | `/patriarch` landing |
+| PT-02  | B     | DONE   | `/patriarch/today` daily devotional view |
+| PT-03  | B     | DONE   | `/patriarch/altar` family altar plans |
+| PT-04  | B     | DONE   | Portfolio landing: Patriarch → live |
+
+## QA (C) — complete history
+
+| ID    | Owner | Status | Title |
+|-------|-------|--------|-------|
+| T-00..T-05 | C | DONE | ClassMap v1 + infra |
+| TK-01..TK-04 | C | DONE | KindleMinds |
+| TP-01..TP-03 | C | DONE | Patriarch |
+
+## ClassMap v2 QA (C) — Phase 1
+
+All C tasks: **mobile breakpoint assertion at 360 px is required for any page-level test** (use Playwright `device: 'iPhone 13'` for e2e).
+
+| ID     | Owner | Status | Title                                                  | Covers      | Notes |
+|--------|-------|--------|--------------------------------------------------------|-------------|-------|
+| TC-01  | C     | TODO   | `lib/classmap/db.ts` round-trip + v1→v2 migration      | A-14        | Real localStorage. Round-trip every shape. Migration test from a fixture v1 saved-plans payload → v2 `LessonPlan` + `LessonTask[]`. |
+| TC-02  | C     | TODO   | Mock auth flow                                         | CM-07, A-15 | signUp, signIn, signOut, session persists across reload. Cosmetic OTP input present but doesn't block. |
+| TC-03  | C     | TODO   | Onboarding wizard                                      | CM-08       | Happy path through all 5 steps, validation errors per step, completed wizard creates a Child via db with derived ageBand + avatarColor. |
+| TC-04  | C     | TODO   | Family page                                            | CM-09       | Renders all children, avatars present, state requirements panel toggles, add-child reopens wizard. |
+
+## ClassMap v2 QA (C) — Phases 2-6 (rows seeded; details added at phase kickoff)
+
+| ID    | Owner | Status | Title | Phase |
+|-------|-------|--------|-------|-------|
+| TC-05 | C | TODO | Today View progress + active card | 2 |
+| TC-06 | C | TODO | Week View drag-and-drop persistence | 2 |
+| TC-07 | C | TODO | TaskModal add/edit/delete | 2 |
+| TC-08 | C | TODO | AI Generate demo + live paths | 2 |
+| TC-09 | C | TODO | Child switcher persistence | 2 |
+| TC-10 | C | TODO | E2E: onboard → generate → today → complete | 2 |
+| TC-11 | C | TODO | xp.ts pure-function tests | 3 |
+| TC-12 | C | TODO | Toast + celebration screen | 3 |
+| TC-13 | C | TODO | Progress dashboard renders charts | 3 |
+| TC-14 | C | TODO | Tutor demo canned matcher | 4 |
+| TC-15 | C | TODO | Coach demo canned matcher | 4 |
+| TC-16 | C | TODO | Chat persistence across navigation | 4 |
+| TC-17 | C | TODO | Upload round-trip | 5 |
+| TC-18 | C | TODO | Report generation demo + live | 5 |
+| TC-19 | C | TODO | Market tabs + cards | 5 |
+| TC-20 | C | TODO | Date filter narrows portfolio | 5 |
+| TC-21 | C | TODO | Connect tabs render | 6 |
+| TC-22 | C | TODO | Family page polish | 6 |
+| TC-23 | C | TODO | Mobile breakpoint snapshots | 6 |
 
 ## Conventions
 
 - File new tasks at the bottom of the relevant section with the next sequential id.
 - When blocked, set status `BLOCKED` and add a `Notes` line starting with `BLOCKED:` explaining why.
-- Reference `lib/*-types.ts` for all data shapes — do not redeclare types locally.
-- Use the editorial design vocabulary in `app/globals.css` (kicker, dek, lead, font-display, accent-clay, accent-ink). Don't invent parallel utilities.
-- **Stage by explicit path** (`git add <file>`); never `git add -A` or `git add .` — see agent prompts for why.
+- For ClassMap v2: types live in `lib/classmap/types.ts`; data CRUD in `lib/classmap/db.ts`. Do not redeclare or bypass.
+- Use the editorial design vocabulary in `app/globals.css` (kicker, dek, lead, font-display, accent-clay, accent-ink). No parallel utilities.
+- **Mobile-first for every ClassMap v2 task** — verify at 360 px viewport before NEEDS_TEST.
+- **Stage by explicit path** (`git add <file>`); never `git add -A` or `git add .`.
+- **Fan out subagents** for any task with ≥3 new files or independent searches — see AGENT_*_PROMPT.md.
