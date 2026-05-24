@@ -145,11 +145,7 @@ export function ClassMapForm({
           control={control}
           name="subjects"
           render={({ field }) => (
-            <div
-              className="grid grid-cols-2 gap-2 sm:grid-cols-3"
-              role="group"
-              aria-label="Subjects"
-            >
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {SUBJECTS.map((s) => {
                 const checked = field.value?.includes(s) ?? false;
                 return (
