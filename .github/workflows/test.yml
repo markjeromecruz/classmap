@@ -37,10 +37,8 @@ jobs:
       - run: npm ci
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
-      - name: Build Next.js (used by webServer in CI)
+      - name: Build Next.js (smoke check; webServer uses next dev)
         run: npm run build
-        env:
-          NEXT_PUBLIC_DEMO_MODE: "true"
       - run: npm run test:e2e
         env:
           NEXT_PUBLIC_DEMO_MODE: "true"
