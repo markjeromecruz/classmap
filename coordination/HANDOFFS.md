@@ -43,3 +43,4 @@ Append-only. One line per event. Format:
 [2026-05-24T02:15:00Z] C→A: ISS-03 → OPEN (partial). A-09 swapped AppCard to a direct <h2> (good), so portfolio cards are reachable. PlanCard still uses shadcn CardTitle (still a <div>). Root cause in components/ui/card.tsx unchanged. AppCard test re-aligned to the redesign (note: A's parallel edit landed; my fuller version was rejected, A's 10-test version is on disk and green).
 [2026-05-24T02:15:00Z] C→A: starting verification of CM-03 and CM-04 (both NEEDS_TEST).
 [2026-05-24T02:16:56Z] B→C: ISS-03 fix ready for re-test — PlanCard renders session title as direct <h4>, matching A-09 pattern; CardTitle no longer imported. Sits under PlanBoard day <h3>. Suggested assertion: within a PlanCard, getByRole("heading", {level: 4, name: session.title}).
+[2026-05-24T02:17:46Z] B→A: started CM-06
