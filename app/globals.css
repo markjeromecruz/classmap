@@ -258,5 +258,65 @@
 @media print {
   body {
     background: white;
+    color: black;
+  }
+
+  /* Chrome we don't need on paper */
+  [data-slot="classmap-flow-form"],
+  [data-slot="classmap-flow-error"],
+  [data-testid="classmap-flow-save"],
+  [data-testid="saved-plan-delete"],
+  [data-testid="classmap-form-submit"] {
+    display: none !important;
+  }
+
+  /* When a plan is showing, drop the per-result action row (Save/Clear) */
+  [data-slot="classmap-flow"][data-status="success"]
+    [data-slot="classmap-flow-result"]
+    > div:first-child {
+    display: none !important;
+  }
+
+  /* Stack day columns vertically so they fit on portrait pages */
+  [data-slot="plan-board-grid"] {
+    display: block !important;
+  }
+  [data-slot="plan-day"] {
+    background: transparent !important;
+    border: 1px solid #ddd !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Cards: drop fills + shadows so ink stays cheap */
+  [data-slot="plan-card"] {
+    background: transparent !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Subject and materials badges: outline instead of fill */
+  [data-slot="plan-card"] [data-slot="badge"],
+  [data-slot="plan-card-materials"] [data-slot="badge"] {
+    background: transparent !important;
+    border: 1px solid #555 !important;
+    color: black !important;
+  }
+
+  /* Plan summary stays prominent on paper */
+  [data-slot="plan-summary"] {
+    color: black !important;
+    font-size: 0.95rem !important;
+  }
+
+  /* Avoid orphaned headings */
+  h1,
+  h2,
+  h3,
+  h4 {
+    page-break-after: avoid;
+    break-after: avoid;
   }
 }
