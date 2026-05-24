@@ -35,7 +35,7 @@ Statuses: `TODO` → `IN_PROGRESS` → `NEEDS_TEST` → `DONE_PENDING_A` → `DO
 | T-02  | C     | DONE_PENDING_A | Component tests for `PlanCard` / `PlanBoard`   | CM-02           | tests/unit/PlanBoard.test.tsx — 17/17 passing |
 | T-03  | C     | DONE_PENDING_A | E2E happy path: fill form → see plan           | CM-03           | tests/unit/ClassMapFlow.test.tsx — 10/10 passing. Component-level equivalent of E2E with stubbed fetch (deterministic). |
 | T-04  | C     | DONE_PENDING_A | E2E save + reload                              | CM-04           | tests/unit/storage.test.ts + tests/unit/SavedPlansList.test.tsx + ClassMapFlow save flow — real localStorage round-trip. |
-| T-05  | C     | TODO   | Demo-mode static build smoke                           | A-03, A-05      | `DEMO_MODE=true npm run build` succeeds; `out/` contains expected files |
+| T-05  | C     | DONE_PENDING_A | Demo-mode static build smoke                   | A-03, A-05      | tests/unit/build-config.test.ts (14 tests): source-level contract on next.config.ts demo-mode switch (output:export + trailingSlash + unoptimized images + basePath) and .github/workflows/deploy-pages.yml (strip api, DEMO env, build, .nojekyll, upload-pages-artifact, deploy-pages, perms). Real build verified manually (`NEXT_PUBLIC_DEMO_MODE=true ... npm run build` → 5s, produces out/index.html, out/classmap/index.html, out/classmap/result/index.html, out/classmap/saved/index.html); live integration covered by deploy-pages workflow every push. |
 
 ## Conventions
 
