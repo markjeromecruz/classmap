@@ -29,7 +29,10 @@ jobs:
       - name: Install
         run: npm ci
       - name: Strip server-only routes (static export cannot include POST handlers)
-        run: rm -rf app/classmap/api
+        run: |
+          rm -rf app/classmap/api
+          rm -rf app/patriarch/api
+          rm -rf app/kindleminds/api
       - name: Build static site
         run: npm run build
       - name: Add .nojekyll
