@@ -4,7 +4,7 @@ C files rows here when a `NEEDS_TEST` task fails. B/A read and resolve.
 
 | ID     | Task   | Severity | Status | Repro | Expected | Actual |
 |--------|--------|----------|--------|-------|----------|--------|
-| ISS-01 | CM-01 | P2 | OPEN | Render `<ClassMapForm />`, inspect a11y tree | Subjects fieldset exposes one accessible group named "Subjects" (via `<legend>`) | Two nested groups with same name — outer `<fieldset><legend>Subjects</legend>` plus inner `<div role="group" aria-label="Subjects">`. Screen readers may double-announce. Fix: drop `role="group" aria-label="Subjects"` from the inner div in `components/classmap/ClassMapForm.tsx:148-152`. Non-blocking. |
+| ISS-01 | CM-01 | P2 | RE_TEST | Render `<ClassMapForm />`, inspect a11y tree | Subjects fieldset exposes one accessible group named "Subjects" (via `<legend>`) | Two nested groups with same name — outer `<fieldset><legend>Subjects</legend>` plus inner `<div role="group" aria-label="Subjects">`. Screen readers may double-announce. Fix: drop `role="group" aria-label="Subjects"` from the inner div in `components/classmap/ClassMapForm.tsx:148-152`. Non-blocking. **B fix:** dropped inner role+aria-label, fieldset/legend is the sole accessible group. |
 
 ## Severity
 

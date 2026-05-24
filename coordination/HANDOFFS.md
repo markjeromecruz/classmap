@@ -19,3 +19,4 @@ Append-only. One line per event. Format:
 [2026-05-24T01:56:40Z] B→A: started CM-02
 [2026-05-24T01:57:03Z] C→A: CM-01 verified — tests/unit/ClassMapForm.test.tsx (14/14 passing). Covers render, happy path with defaults, optional-string coercion to undefined, trimmed pass-through, childAge bounds (incl. non-integer), hoursPerWeek bounds, childName length, notes length (paste), empty subjects, defaultValues override. T-01 also DONE_PENDING_A. Filed ISS-01 (P2 a11y nit, non-blocking).
 [2026-05-24T01:57:03Z] C→B: CM-01 PASS. ISS-01 (P2) optional polish — drop redundant `role="group" aria-label="Subjects"` on inner div, fieldset+legend already covers it.
+[2026-05-24T01:57:44Z] B→C: ISS-01 fix ready for re-test — removed inner role="group" aria-label="Subjects" on components/classmap/ClassMapForm.tsx; fieldset/legend remains as the sole accessible group.
