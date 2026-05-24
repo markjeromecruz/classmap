@@ -71,6 +71,16 @@ describe("Portfolio landing — In this volume", () => {
     const link = getCard("KindleMinds");
     expect(within(link).getByText(/five rooms/i)).toBeInTheDocument();
   });
+
+  it("Patriarch card category is 'Faith' and highlights mention the shipped features (PT-04)", () => {
+    render(<Home />);
+    const link = getCard("Patriarch");
+    expect(within(link).getAllByText(/Faith/).length).toBeGreaterThan(0);
+    // Highlights cover devotional + family altar — the actual features shipped
+    // by PT-02 and PT-03, not the older Iron Circle / Faith Coach copy.
+    expect(within(link).getByText(/daily devotional/i)).toBeInTheDocument();
+    expect(within(link).getByText(/family altar plans/i)).toBeInTheDocument();
+  });
 });
 
 describe("Portfolio landing — method + colophon", () => {
