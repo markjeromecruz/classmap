@@ -122,15 +122,15 @@ export function ChildSwitcher() {
     reactiveChildren = null;
   }
 
-  const [fallbackChildren, setFallbackChildren] = useState<Child[]>([]);
-  const [fallbackActive, setFallbackActive] = useState<Child | null>(null);
+  // Lazy initializers read localStorage exactly once on mount. We do not
+  // re-read after that — when the reactive store via useAppState is
+  // available it takes over (see `children` / `activeChild` below).
+  // Avoids `setState` inside `useEffect` which triggers the React lint
+  // "Calling setState synchronously within an effect can trigger cascading
+  // renders" rule.
+  const [fallbackChildren] = useState<Child[]>(() => safeGetChildren());
+  const [fallbackActive] = useState<Child | null>(() => safeGetActiveChild());
   const detailsRef = useRef<HTMLDetailsElement>(null);
-
-  useEffect(() => {
-    if (reactiveChildren) return;
-    setFallbackChildren(safeGetChildren());
-    setFallbackActive(safeGetActiveChild());
-  }, [reactiveChildren]);
 
   const children: Child[] = reactiveChildren ?? fallbackChildren;
   const activeChild: Child | null = reactiveChildren
