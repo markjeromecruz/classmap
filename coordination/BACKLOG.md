@@ -20,7 +20,7 @@ Statuses: `TODO` → `IN_PROGRESS` → `NEEDS_TEST` → `DONE_PENDING_A` → `DO
 | ID     | Owner | Status | Title                                                       | Depends on | Notes |
 |--------|-------|--------|-------------------------------------------------------------|------------|-------|
 | CM-01  | B     | DONE           | `ClassMapForm` component                           | A-01       | Verified by C — 41/41 tests after ISS-01 fix. Signed off by A. |
-| CM-02  | B     | NEEDS_TEST | `PlanCard` + `PlanBoard` components                     | A-01       | Render `LessonPlan` from `lib/types.ts`. 5-column day layout, subject-colored cards. Use shadcn card/badge. |
+| CM-02  | B     | DONE_PENDING_A | `PlanCard` + `PlanBoard` components                 | A-01       | Verified by C — tests/unit/PlanBoard.test.tsx (17 tests). 5-col day grid Mon..Fri, session counts, subject styling, materials chips, summary toggle, missing-day fallback, formatMinutes (45 min / 1h / 1h 30m), PE+Language labels. |
 | CM-03  | B     | TODO   | `/classmap/result` page wiring form → API → board           | CM-01, CM-02, A-02, A-03 | Reads `NEXT_PUBLIC_DEMO_MODE`. If true, calls `getDemoPlan(input)`. Else POSTs to `/api/generate`. |
 | CM-04  | B     | TODO   | `/classmap/saved` + `lib/storage.ts` (localStorage)         | CM-02      | Save button on result page; saved list page; delete button. |
 | CM-05  | B     | TODO   | Loading + error states across `/classmap/*`                 | CM-03      | shadcn skeleton + alert. |
@@ -32,7 +32,7 @@ Statuses: `TODO` → `IN_PROGRESS` → `NEEDS_TEST` → `DONE_PENDING_A` → `DO
 |-------|-------|--------|--------------------------------------------------------|-----------------|-------|
 | T-00  | C     | DONE   | Vitest + Playwright + CI                               | infra           | Signed off by A. 27/27 unit + 1/1 e2e. CI at `.github/workflows/test.yml`. |
 | T-01  | C     | DONE   | Unit tests for `ClassMapForm` validation               | CM-01           | Signed off by A. 14/14 passing (then 41/41 after ISS-01 fix). |
-| T-02  | C     | TODO   | Component tests for `PlanCard` / `PlanBoard`           | CM-02           | snapshot + a11y; verify all 5 days render |
+| T-02  | C     | DONE_PENDING_A | Component tests for `PlanCard` / `PlanBoard`   | CM-02           | tests/unit/PlanBoard.test.tsx — 17/17 passing |
 | T-03  | C     | TODO   | E2E happy path: fill form → see plan                   | CM-03           | mock `/api/generate` with a fixture; assert plan renders |
 | T-04  | C     | TODO   | E2E save + reload                                      | CM-04           | localStorage round-trip |
 | T-05  | C     | TODO   | Demo-mode static build smoke                           | A-03, A-05      | `DEMO_MODE=true npm run build` succeeds; `out/` contains expected files |

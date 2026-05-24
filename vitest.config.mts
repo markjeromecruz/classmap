@@ -1,19 +1,23 @@
 import { defineConfig } from "vitest/config";
 import { fileURLToPath } from "node:url";
 import react from "@vitejs/plugin-react";
+import tsconfigPaths from "vite-tsconfig-paths";
 
-// We intentionally do NOT use vite-tsconfig-paths here: tsconfig.json
-// excludes tests/** (and the config files themselves), which makes the
-// plugin skip the `@/*` mapping for the very files that need it. Define
-// the alias explicitly so the test suite is self-contained.
-const projectRoot = fileURLToPath(new URL(".", import.meta.url));
+// tsconfig.test.json gives the IDE + tsc visibility into tests.
+// The explicit resolve.alias is a belt-and-suspenders: vite-tsconfig-paths
+// only applies path mapping to files included in the listed tsconfigs, and
+// tsconfig.test.json scopes to tests/** only — so without the alias, source
+// files imported FROM tests (e.g. components/classmap/ClassMapForm.tsx →
+// "@/lib/types") fail to resolve. See ISS-03.
+const projectRoot = fileURLToPath(new URL(".", import.meta.url)).replace(/\/$/, "");
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    tsconfigPaths({ projects: ["./tsconfig.test.json"] }),
+    react(),
+  ],
   resolve: {
-    alias: {
-      "@": projectRoot.replace(/\/$/, ""),
-    },
+    alias: { "@": projectRoot },
   },
   test: {
     environment: "jsdom",
