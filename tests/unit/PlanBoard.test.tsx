@@ -168,4 +168,14 @@ describe("PlanCard", () => {
     render(<PlanCard session={session("foreign-language", "Vocab", 20)} />);
     expect(screen.getByText("Language")).toBeInTheDocument();
   });
+
+  // Regression for ISS-03: session title must be a heading element so
+  // screen-reader users can jump to it via heading navigation. PlanBoard
+  // uses <h3> for day labels, so per-session titles are <h4>.
+  it("renders the session title as an h4 (ISS-03)", () => {
+    render(<PlanCard session={session("math", "Fractions", 45)} />);
+    expect(
+      screen.getByRole("heading", { level: 4, name: "Fractions" }),
+    ).toBeInTheDocument();
+  });
 });
