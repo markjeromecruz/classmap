@@ -11,20 +11,28 @@ export const metadata = {
 export default function ClassMapPage() {
   return (
     <main className="mx-auto max-w-5xl px-4 py-10 sm:py-16">
-      <header className="mb-10 space-y-3">
+      <header className="mb-10 flex flex-wrap items-start justify-between gap-4">
+        <div className="space-y-3">
+          <Link
+            href="/"
+            className="text-xs text-muted-foreground hover:text-foreground"
+          >
+            ← back to portfolio
+          </Link>
+          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+            ClassMap
+          </h1>
+          <p className="max-w-2xl text-sm text-muted-foreground sm:text-base">
+            An AI lesson planner for homeschooling parents. Tell it about your
+            child and it lays out a balanced week across the subjects you pick.
+          </p>
+        </div>
         <Link
-          href="/"
-          className="text-xs text-muted-foreground hover:text-foreground"
+          href="/classmap/saved"
+          className="text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
         >
-          ← back to portfolio
+          Saved plans →
         </Link>
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          ClassMap
-        </h1>
-        <p className="max-w-2xl text-sm text-muted-foreground sm:text-base">
-          An AI lesson planner for homeschooling parents. Tell it about your
-          child and it lays out a balanced week across the subjects you pick.
-        </p>
       </header>
       <ClassMapFlow />
     </main>
