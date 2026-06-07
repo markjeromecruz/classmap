@@ -1,0 +1,8 @@
+- [Agent role in `/dom` 3-agent setup](project_agent_role.md) — written by C; only authoritative when running as C. See [project-3agent-protocol] for the role-identification rule that works for all three agents.
+- [The 3-agent A/B/C protocol](project_3agent_protocol.md) — who does what, how handoffs work, role identification by which prompt was pasted
+- [dom/ workspace structure and app roadmap](project_dom_workspace.md) — ClassMap → KindleMinds → Patriarch, file layout per app
+- [Repo + Pages + source-doc URLs](reference_classmap_repo.md) — GitHub, Pages, Google Doc ID, gh/claude CLI auth
+- [Use headless `claude` CLI, not Anthropic SDK](feedback_headless_claude.md) — avoid API charges; pattern in lib/*-claude.ts
+- [Stage git by explicit path (never -A)](feedback_git_hygiene.md) — multi-agent worktree collisions
+- [Editorial design system + Next 16 conventions](feedback_classmap_conventions.md) — Fraunces + Instrument Sans, warm cream palette, file layout, Next 16 caveats
+- [Trust the protocol — don't surface "paste this tick" to the user](feedback_trust_the_protocol.md) — B and C poll HANDOFFS on their own; just push and trust

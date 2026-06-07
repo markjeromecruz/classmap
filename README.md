@@ -1,61 +1,61 @@
 # Kindle Minds — multi-app portfolio
 
-A working portfolio of AI-native apps, starting with **ClassMap** (AI homeschool lesson planner). Built and maintained by a **3-agent coordination protocol** (A = PM + foundation, B = implementation dev, C = QA).
+A working portfolio of AI-native apps. Built and maintained by a **3-agent coordination protocol** (A = PM + foundation, B = implementation dev, C = QA).
 
-- Live demo: https://markjeromecruz.github.io/classmap/ _(after first Pages deploy)_
-- Source: https://github.com/markjeromecruz/classmap
+- **Live demo:** https://markjeromecruz.github.io/classmap/
+- **Source:** https://github.com/markjeromecruz/classmap
+- **Continuation guide (start here on a new machine):** [`docs/CONTINUATION.md`](docs/CONTINUATION.md)
 
 ## Status
 
-| App         | Status      | Notes |
-|-------------|-------------|-------|
-| ClassMap    | MVP in progress | First app — form + lesson plan generator |
-| KindleMinds | Coming soon | Homeschool social hub |
-| Patriarch   | Coming soon | Faith-based family-leadership app |
+| App                    | Status      | Notes |
+|------------------------|-------------|-------|
+| ClassMap v1 MVP        | ✅ Shipped  | Form → AI lesson plan → save (the original MVP) |
+| KindleMinds            | ✅ Shipped  | Homeschool community hub — 5 rooms + threads |
+| Patriarch              | ✅ Shipped  | Faith-based family-leadership app — daily devotional + family altars |
+| ClassMap v2 Phase 1    | ✅ Shipped  | Mock auth + onboarding wizard + family page + shell |
+| ClassMap v2 Phase 2    | 🔜 Next     | Today / Week views, task CRUD, AI Generate |
+| ClassMap v2 Phases 3–6 | 🔓 Unblocked| Gamification → AI tutor/coach → portfolio/market → connect |
 
-## How it runs
+Full status table: [`docs/PROJECT_STATE.md`](docs/PROJECT_STATE.md). Roadmap: [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
-### Local (full-stack, real Claude generation)
+## Quick start (local, full features)
 
 ```bash
+git clone https://github.com/markjeromecruz/classmap.git
+cd classmap
 npm install
 npm run dev
 ```
 
-Open http://localhost:3000. The ClassMap form POSTs to `/api/generate`, which uses the **Claude Code headless SDK** (`@anthropic-ai/claude-code`) — no Anthropic API key required, since it routes through your existing Claude Code session.
+Open http://localhost:3000. ClassMap calls the **`claude` CLI in headless mode** (`claude -p`) — no `ANTHROPIC_API_KEY` needed, no API charges, requires you to have `claude` on PATH and signed in. See [`docs/SETUP.md`](docs/SETUP.md) for the full machine setup.
 
-### Demo build (static, canned data) — same as what GitHub Pages serves
+## Pages demo build (static, canned AI)
 
 ```bash
-rm -rf app/classmap/api          # static export can't include POST handlers
+rm -rf app/classmap/api app/patriarch/api app/kindleminds/api  # static export can't include POST handlers
 NEXT_PUBLIC_DEMO_MODE=true NEXT_PUBLIC_BASE_PATH= npm run build
 npx serve out
 ```
 
-The form returns a pre-canned plan matched by age band. No network calls leave the page.
+CI does this on every push to `main` via [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml).
 
-## 3-agent workflow
+## How the 3-agent protocol works
 
-This repo is intended to be developed by three Claude Code sessions running in parallel:
+Three concurrent Claude Code sessions in the same git worktree:
+- **Agent A** (PM + foundation) — this is the main session
+- **Agent B** (developer) — separate terminal, started by pasting `coordination/AGENT_B_PROMPT.md`
+- **Agent C** (QA) — separate terminal, started by pasting `coordination/AGENT_C_PROMPT.md`
 
-- **Agent A** (the session you started in) — PM, foundation, reviews
-- **Agent B** — implementation, picks up `TODO` items
-- **Agent C** — QA, writes tests, files bugs
+They coordinate by editing `coordination/BACKLOG.md`, `coordination/HANDOFFS.md`, and `coordination/ISSUES.md`. Git is the transport.
 
-Setup:
-
-1. Open two more terminals; run `claude` in each, both starting in this directory.
-2. Paste the contents of `coordination/AGENT_B_PROMPT.md` into one. That session becomes B.
-3. Paste the contents of `coordination/AGENT_C_PROMPT.md` into the other. That session becomes C.
-4. All three communicate by editing `coordination/BACKLOG.md`, `coordination/HANDOFFS.md`, and `coordination/ISSUES.md`. Git is the transport.
-5. When you want B or C to pick up new work, just type `tick` into their terminal — their loop will scan the files and act.
-
-See `coordination/README.md` for the full protocol.
+Full protocol: [`docs/3_AGENT_PROTOCOL.md`](docs/3_AGENT_PROTOCOL.md).
 
 ## Stack
 
-- Next.js 16 (App Router) + React 19 + TypeScript
-- Tailwind CSS 4 + shadcn/ui
-- `@anthropic-ai/claude-code` for AI generation (headless)
-- Zod for input/output validation
-- Vitest + Playwright for tests (set up by Agent C)
+- **Next.js 16** (App Router + Turbopack) + **React 19** + **TypeScript** strict
+- **Tailwind 4** + **shadcn/ui** primitives
+- **Editorial design system** — Fraunces (display serif) + Instrument Sans (body), warm-cream palette. See [`docs/memory/feedback_classmap_conventions.md`](docs/memory/feedback_classmap_conventions.md).
+- **Zod 4** for schema validation everywhere
+- **Vitest** + **Playwright** for tests (`tests/unit/` and `tests/e2e/`)
+- **`claude` CLI** (headless) for all AI generation — never the Anthropic SDK. See [`docs/memory/feedback_headless_claude.md`](docs/memory/feedback_headless_claude.md).
